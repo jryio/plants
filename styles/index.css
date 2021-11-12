@@ -1,0 +1,11 @@
+/* Import Tailwind css components for use */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Using theme() function to reference tailwind theme */
+/* https://tailwindcss.com/docs/functions-and-directives#theme */
+
+/* Using layers to apply base styles */
+/* https://tailwindcss.com/docs/adding-base-styles#using-css */
+
