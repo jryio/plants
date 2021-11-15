@@ -9,3 +9,6 @@
 /* Using layers to apply base styles */
 /* https://tailwindcss.com/docs/adding-base-styles#using-css */
 
+.prose img {
+  margin: 0;
+}
