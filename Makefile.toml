@@ -1,0 +1,140 @@
+# cargo-make configuration file
+# Default makefile is Makefile.toml
+# =========================================================
+# cargo-make includes cargo-watch as a dependency
+# Adding watch = true to a command will restart when files change
+# watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*", watch = ["./docs/"] }
+# =========================================================
+
+env_files = [
+	{ path = ".env/common.env" },
+	{ path = ".env/devel.env", profile = "devel"},
+	{ path = ".env/prod.env", profile = "prod" }
+]
+
+# Enable workspace support
+# Documentation: https://github.com/sagiegurari/cargo-make#usage-workspace-support
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+
+
+[tasks.all]
+condition = { profiles = [ "devel" ] }
+dependencies = [
+  "be",
+  "fe"
+]
+
+[tasks.fe]
+condition = { profiles = [ "devel" ] }
+watch = { watch = [ "src/", "styles/" ]}
+command = "trunk"
+args = [ "serve" ]
+
+[tasks.be]
+condition = { profiles = [ "devel" ] }
+watch = { watch = [ "src/" ] }
+
+
+# =========================================================
+# Cargo Make Crash Course
+# =========================================================
+# 	-------------------------------------------------------
+# 	Profiles
+# 	-------------------------------------------------------
+# cargo make --profile prooduction or -p development task_name_here
+#
+# 	-------------------------------------------------------
+# 	Environment Variables
+# 	-------------------------------------------------------
+# [env]
+# EVALUATED_VAR = { script = ["echo SOME VALUE"] }
+# TEST1 = "value1"
+# TEST2 = "value2"
+# COMPOSITE = "${TEST1} ${TEST2}"
+
+# # profile based environment override
+# [env.development]
+# DEV = true
+
+# [env.production]
+# PROD = true
+#
+# 	-------------------------------------------------------
+# 	Env Files
+# 	-------------------------------------------------------
+# env_files = [
+#     { path = "./second.env", profile = "second_profile" },
+#     { path = "./another.env", profile = "another_profile" }
+# ]
+
+# [config]
+# additional_profiles = ["second_profile", "another_profile"]
+
+# [env.second_profile]
+# IS_SECOND_AVAILABLE = true
+
+# [env.another_profile]
+# IS_OTHER_AVAILABLE = true
+#
+# 	-------------------------------------------------------
+# 	Scripts
+# 	-------------------------------------------------------
+# [tasks.task_name_B]
+# [tasks.take_name_D]
+# String
+# script: "echo Hi"
+#
+# Multiline string
+# script: '''
+# 	echo Hi
+# '''
+#
+# # Array
+# script: [
+# 	"echo h",
+# 	"echo e",
+# 	"echo l",
+# 	"echo l",
+# 	"echo o",
+# ]
+#
+# 	# File
+# 	script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = true }
+#
+# 	-------------------------------------------------------
+# 	Subtasks
+# 	-------------------------------------------------------
+# [tasks.take_name_C]
+# dependencies = ["task_name_B"] # RUNS BEFORE C
+#
+# 	# Subtask
+# run_task = "task_name_B" # RUNS AFTER C
+#
+# 	# Multiple Substasks with Conditions
+# run_task = [
+#  { name = "test1", condition = { platforms = ["windows", "linux"], channels = ["beta", "stable"] } },
+#  { name = "test2", condition = { platforms = ["mac"], rust_version = { min = "1.20.0", max = "1.30.0" } } },
+#  { name = "test3", condition_script = [ "somecommand" ] },
+# ]
+#
+# Forked Subtask
+# run_task = [
+# 	{ name: "task_name_B", forked: true  }
+# ]
+#
+# Parallel Substasks
+# run_task = { name = ["echo1", "echo2"], parallel = true }
+#
+# 	-------------------------------------------------------
+# 	Conditions
+# 	-------------------------------------------------------
+# [tasks.echo-development]
+# condition = { profiles = [ "development" ] }
+# command = "echo"
+# args = [ "running in development profile" ]
+
+# [tasks.echo-production]
+# condition = { profiles = [ "production" ] }
+# command = "echo"
+# args = [ "running in production profile" ]#

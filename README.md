@@ -7,6 +7,7 @@ Keep a logbook for my houseplants
 * `trunk`
 * `yew`
 * `tailwindcli`
+* `cargo-make (cargo install --force cargo-make)`
 
 ## Configuration
 

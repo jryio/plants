@@ -1,0 +1,10 @@
+[package]
+name = "plantbook-backend"
+version = "0.1.0"
+edition = "2021"
+description = "(Backend) Keeping track of my houseplants"
+readme = "README.md"
+repository = "https://github.com/thebearjew/plantbook"
+license = "MIT"
+keywords = ["axum"]
+categories = []
