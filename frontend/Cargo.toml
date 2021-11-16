@@ -1,0 +1,22 @@
+[package]
+name = "plantbook"
+version = "0.1.0"
+edition = "2021"
+description = "Keeping track of my houseplants"
+readme = "README.md"
+repository = "https://github.com/thebearjew/plantbook"
+license = "MIT"
+keywords = ["yew"]
+categories = []
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+yew = {git = "https://github.com/yewstack/yew", branch = "master"} # Yew @ next
+yew-router = { git = "https://github.com/yewstack/yew", branch="master" }
+rand = "0.8.4"
+getrandom = { version = "0.2.3", features = ["js"] } # This is a dependency of rand which requries the js feature to work
+serde = "1.0"
+chrono = { version = "0.4.19", features = [ "serde", "wasmbind" ] } # Chrono for date diffing -> consider changing this as it is no longer maintained
+log = "0.4.14"
+wasm-logger = "0.2" # Logging for WASM applications
+
