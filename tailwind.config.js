@@ -3,6 +3,7 @@ module.exports = {
   purge: [
     "src/**/*.rs"
   ],
+  important: true,
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {

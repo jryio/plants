@@ -14,6 +14,12 @@ categories = []
 # Yew @ next (probably a bad idea)
 yew-router = { git = "https://github.com/yewstack/yew", branch="master" }
 yew = {git = "https://github.com/yewstack/yew", branch = "master"}
+rand = "0.8.4"
+getrandom = { version = "0.2.3", features = ["js"] } # This is a dependency of rand which requries the js feature to work
+serde = "1.0"
+# Chrono for date diffing
+chrono = { version = "0.4.19", features = [ "serde", "wasmbind" ] }
+# TODO: Setup logging
 # Logging for WASM applications
 log = "0.4.14"
 wasm-logger = "0.2"

@@ -1,3 +1,4 @@
+use chrono::prelude::*;
 use yew::prelude::*;
 
 #[derive(Properties, PartialEq, Clone)]
@@ -22,31 +23,47 @@ pub struct PlantPreviewProps {
     pub room: String,
     pub water_frequency: usize,
     pub water_instructions: String,
-    pub last_watered_date: String,
+    pub last_watered_date: DateTime<Utc>,
     pub last_watered_by: String,
 }
 
 #[function_component(PlantPreview)]
 pub fn plant_preview(props: &PlantPreviewProps) -> Html {
-    println!("props = {:?}", props);
+    // log::debug!("props = {:?}", props);
+    let days_since_watered = props
+        .last_watered_date
+        .signed_duration_since(Utc::now())
+        .num_days();
+    let last_watered_emoji = {
+        match days_since_watered as u64 {
+            0..=3 => "😄",
+            4..=7 => "😅",
+            8..=14 => "🥵",
+            15.. => "‼️☠️‼️",
+        }
+    };
+    let last_watered_date_by = format!(
+        "Last watered {} days ago by {}",
+        days_since_watered, props.last_watered_by
+    );
     html! {
       // Container
-      <div class={classes!("flex", "flex-col","w-72", "h-72","bg-green-100")}>
+      <div class={classes!("flex", "flex-col","w-72", "h-72","rounded-md","bg-green-100", "hover:cursor-pointer")}>
         // Image
         <img
-          src={String::from("https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1557177323-pilea-peperomioides-money-plant-in-the-pot-single-royalty-free-image-917778022-1557177295.jpg?crop=1.00xw:0.668xh;0,0.269xh&resize=480:*")}
-          class={classes!("flex-shrink-0","h-4/6","object-cover","self-start", "w-full", "max-w-full", "bg-gray-400")}
+          src={props.image.clone()}
+          class={classes!("flex-shrink-0","h-4/6","object-cover","self-start", "w-full", "max-w-full", "rounded-t-md", "bg-gray-400")}
         />
         <div class={classes!("p-2", "h-2/6")}>
           // Name
           <div class={classes!("flex-shrink-1", "flex-wrap", "overflow-hidden", "opactiy-100")}>
-            <div class={classes!("text-lg")}>{&props.name}</div>
+            <span class={classes!("text-lg", "font-medium")}>
+              {format!("{} {}", last_watered_emoji, props.name)}
+          </span>
           </div>
-          // Water Status
+          // Last Watered Status
           <div class={classes!()}>
-          </div>
-          // Last Watered By
-          <div class={classes!()}>
+            {last_watered_date_by}
           </div>
         </div>
       </div>
