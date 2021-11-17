@@ -1,4 +1,5 @@
 use chrono::prelude::*;
+// use common::Plant;
 use yew::prelude::*;
 
 #[derive(Properties, PartialEq, Clone)]
@@ -17,7 +18,7 @@ pub fn plant_container(props: &PlantContainerProps) -> Html {
 
 // TODO: Compute status of plant based on last water date
 #[derive(Properties, PartialEq, Clone, Debug)]
-pub struct PlantPreviewProps {
+pub struct PlantCardProps {
     pub name: String,
     pub image: String,
     pub room: String,
@@ -27,8 +28,8 @@ pub struct PlantPreviewProps {
     pub last_watered_by: String,
 }
 
-#[function_component(PlantPreview)]
-pub fn plant_preview(props: &PlantPreviewProps) -> Html {
+#[function_component(PlantCard)]
+pub fn plant_preview(props: &PlantCardProps) -> Html {
     // log::debug!("props = {:?}", props);
     let days_since_watered = props
         .last_watered_date

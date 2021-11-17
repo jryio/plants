@@ -8,7 +8,7 @@
 
 env_files = [
 	{ path = ".env/common.env" },
-	{ path = ".env/devel.env", profile = "devel"},
+	{ path = ".env/devel.env", profile = "development"},
 	{ path = ".env/prod.env", profile = "prod" }
 ]
 
@@ -18,23 +18,31 @@ env_files = [
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
 
 
+# =========================================================
+# Development
+# =========================================================
 [tasks.all]
-condition = { profiles = [ "devel" ] }
+condition = { profiles = [ "development" ] }
 dependencies = [
   "be",
   "fe"
 ]
 
 [tasks.fe]
-condition = { profiles = [ "devel" ] }
-watch = { watch = [ "src/", "styles/" ]}
+condition = { profiles = [ "development" ] }
+watch = { watch = [ "./src/"  ]}
 command = "trunk"
 args = [ "serve" ]
 
 [tasks.be]
-condition = { profiles = [ "devel" ] }
+condition = { profiles = [ "development" ] }
 watch = { watch = [ "src/" ] }
 
+# =========================================================
+# Production
+# =========================================================
+
+# TODO!
 
 # =========================================================
 # Cargo Make Crash Course
