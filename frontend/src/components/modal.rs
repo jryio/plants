@@ -72,13 +72,13 @@ impl Component for ModalBase {
             .expect("Missing element with ID #portal-target");
 
         let classes_background = classes!(
-            "fixed",
+            "absolute",
             "z-10",
             "min-w-full",
             "min-h-full",
             "bg-gray-600",
             "bg-opacity-80",
-            // "hover:cursor-pointer"
+            "hover:cursor-pointer"
         );
 
         let classes_absolute_container = classes!(
@@ -99,7 +99,7 @@ impl Component for ModalBase {
         );
 
         // Render a close button here
-        let classes_relative_container = classes!("relative");
+        let classes_relative_container = classes!("relative", "h-full");
 
         let classes_icon_close = classes!(
             "absolute",
@@ -115,24 +115,27 @@ impl Component for ModalBase {
 
         let maybe_children = if is_modal_open {
             html! {
+                <>
                 <div
                     onclick={&on_close_modal}
                     id={id_modal_background}
                     class={classes_background}
                 >
-                    // Modal
-                    <div id={id_modal_window} class={classes_absolute_container}>
-                        // Content
-                        <div id={id_modal_content} class={classes_relative_container}>
-                            <IconXCircle
-                                onclick={&on_close_modal}
-                                id={id_close_icon}
-                                class={classes_icon_close}
-                            />
-                            { ctx.props().children.clone()}
-                        </div>
+                </div>
+
+                // Modal
+                <div id={id_modal_window} class={classes_absolute_container}>
+                    // Content
+                    <div id={id_modal_content} class={classes_relative_container}>
+                        <IconXCircle
+                            onclick={&on_close_modal}
+                            id={id_close_icon}
+                            class={classes_icon_close}
+                        />
+                        { ctx.props().children.clone()}
                     </div>
                 </div>
+                </>
             }
         } else {
             html! {}

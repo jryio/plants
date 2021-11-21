@@ -10,7 +10,7 @@ pub struct PlantContainerProps {
 #[function_component(PlantContainer)]
 pub fn plant_container(props: &PlantContainerProps) -> Html {
     html! {
-      <div class={classes!("flex", "flex-row", "flex-wrap", "gap-8" )}>
+      <div class={classes!("flex", "flex-row", "flex-wrap", "gap-4" )}>
         { props.children.clone() }
       </div>
     }

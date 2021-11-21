@@ -63,7 +63,7 @@ impl Component for App {
                         </h1>
                         // Add Plant
                         <ModalButton>
-                            <div class={classes!("flex", "flex-row", "flex-shrink", "self-center", "p-2","mr-12", "gap-1", "hover:cursor-pointer")} >
+                            <div class={classes!("flex", "flex-row", "flex-shrink", "self-center", "p-2", "gap-1", "hover:cursor-pointer", "hover:rounded-md", "hover:bg-gray-200")} >
                                 <IconPlusSolid class={classes!("h-6", "w-6", "self-center", )} />
                               <span>{"Add Plant"}</span>
                             </div>
