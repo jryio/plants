@@ -4,7 +4,7 @@ use yewdux::prelude::{Changed, Reducer};
 pub enum Action {
     ModalOpen,
     ModalClose,
-    Noop,
+    NoOp,
 }
 
 #[derive(Clone)]
@@ -23,9 +23,7 @@ impl Reducer for Store {
 
     fn reduce(&mut self, action: Self::Action) -> Changed {
         match action {
-            Action::Noop => {
-                false
-            },
+            Action::NoOp => false,
             Action::ModalOpen => {
                 info!("Reducer -- ModalOpen");
                 self.is_modal_open = true;
