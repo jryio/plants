@@ -1,39 +1,32 @@
-use log::info;
-use yewdux::prelude::{Changed, Reducer};
+use bounce::*;
+use yew::Reducible;
 
+#[derive(Debug)]
 pub enum Action {
+    None,
     ModalOpen,
     ModalClose,
-    NoOp,
 }
 
-#[derive(Clone)]
+#[derive(Slice, PartialEq, Default)]
 pub struct Store {
     pub is_modal_open: bool,
 }
 
-impl Reducer for Store {
+impl Reducible for Store {
     type Action = Action;
-    fn new() -> Self {
-        info!("Reducer -- NEW");
-        Self {
-            is_modal_open: false,
-        }
-    }
 
-    fn reduce(&mut self, action: Self::Action) -> Changed {
+    fn reduce(self: std::rc::Rc<Self>, action: Self::Action) -> std::rc::Rc<Self> {
         match action {
-            Action::NoOp => false,
-            Action::ModalOpen => {
-                info!("Reducer -- ModalOpen");
-                self.is_modal_open = true;
-                true
+            Action::ModalOpen => Self {
+                is_modal_open: true,
             }
-            Action::ModalClose => {
-                info!("Reducer -- ModalClose");
-                self.is_modal_open = false;
-                true
+            .into(),
+            Action::ModalClose => Self {
+                is_modal_open: false,
             }
+            .into(),
+            Action::None => self,
         }
     }
 }

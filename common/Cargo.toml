@@ -6,7 +6,12 @@ readme = "README.md"
 repository = "https://github.com/thebearjew/plantbook"
 
 [dependencies]
+anyhow = "1.0"
 serde = { version = "^1.0", features = [ "derive" ] }
-validator = { version = "0.12", features = ["derive"] }
+strum = { version = "0.23", features = ["derive"] }
+validator = { version = "0.14", features = ["derive"] }
 chrono = { version = "0.4.19", features = [ "serde" ] }
+chrono-tz = { version = "0.6", features = [ "serde"] }
 uuid = { version = "0.8", features = ["serde", "v4"] }
+yew_form = { path =  "../../yew_form/yew_form" }
+yew_form_derive = { path =  "../../yew_form/yew_form_derive" }

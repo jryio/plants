@@ -11,7 +11,7 @@ pub fn layout_page(props: &LayoutPageProps) -> Html {
     html! {
         <div class={classes!("container", "mx-auto",  "relative", "p-4")}>
             <div class={classes!("prose", "mx-auto", "min-w-full")}>
-                { props.children.clone() }
+                { for props.children.iter() }
             </div>
         </div>
     }

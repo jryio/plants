@@ -52,8 +52,9 @@ pub fn plant_preview(props: &PlantCardProps) -> Html {
       <div class={classes!("flex", "flex-col","w-72", "h-72","rounded-md","bg-green-100", "hover:cursor-pointer")}>
         // Image
         <img
-          src={props.image.clone()}
-          class={classes!("flex-shrink-0","h-4/6","object-cover","self-start", "w-full", "max-w-full", "rounded-t-md", "bg-gray-400")}
+            alt="plant card image"
+            src={props.image.clone()}
+            class={classes!("flex-shrink-0","h-4/6","object-cover","self-start", "w-full", "max-w-full", "rounded-t-md", "bg-gray-400")}
         />
         <div class={classes!("p-2", "h-2/6")}>
           // Name
