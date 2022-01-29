@@ -7,8 +7,8 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use validator::Validate;
 
-use crate::location::Location;
-use crate::person::Person;
+use crate::models::location::Location;
+use crate::models::person::Person;
 
 pub type PlantId = Uuid;
 
