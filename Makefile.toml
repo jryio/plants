@@ -1,15 +1,19 @@
-# cargo-make configuration file
-# Default makefile is Makefile.toml
 # =========================================================
-# cargo-make includes cargo-watch as a dependency
-# Adding watch = true to a command will restart when files change
-# watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*", watch = ["./docs/"] }
+# CARGO MAKE
+# Documentation: https://sagiegurari.github.io/cargo-make
 # =========================================================
 
+# =========================================================
+# ENV FILES
+# =========================================================
+# Load env files depending on our profile
+# Values will be used in docker-compose.yaml
 env_files = [
-	{ path = ".env/common.env" },
-	{ path = ".env/devel.env", profile = "development"},
-	{ path = ".env/prod.env", profile = "prod" }
+  { path = "./env/common.env" },
+  { path = "./env/app.dev.env", profile = "development" },
+  { path = "./env/app.prod.env", profile = "prod" },
+  { path = "./env/db.dev.env", profile = "development" },
+  { path = "./env/db.prod.env", profile = "prod" },
 ]
 
 # Enable workspace support
@@ -17,132 +21,137 @@ env_files = [
 [env]
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
 
+[env.development]
+MODE = "dev"
+
+[env.prod]
+MDOE = "prod"
 
 # =========================================================
-# Development
+# BUILD SCRIPTS
 # =========================================================
-[tasks.all]
-condition = { profiles = [ "development" ] }
-dependencies = [
-  "be",
-  "fe"
+[tasks.start]
+# TODO:
+# - Build tailwind once
+# - Start frontennd
+# - Write a cleanup flow of tasks that undoes everything in "start
+#   Mainly shutting down docker containers like DB and TW
+workspace = false
+condition = { profiles = ["development"] }
+run_task = [
+  { name = [
+    "start-web",
+    "start-server",
+  ], parallel = true },
+  { name = [
+    "compose-logs",
+  ] },
 ]
 
-[tasks.fe]
-condition = { profiles = [ "development" ] }
-watch = { watch = [ "./src/"  ]}
+# WEB
+[tasks.start-web]
+condition = { profiles = ["development"] }
+watch = { watch = ["./src/"] }
 command = "trunk"
-args = [ "serve" ]
+args = ["serve"]
+dependencies = ["start-tw"]
 
-[tasks.be]
-condition = { profiles = [ "development" ] }
-watch = { watch = [ "src/" ] }
+[tasks.build-web]
+workspace = false
+condition = { profiles = ["prod"] }
+command = "trunk"
+args = ["build", "--dist", "backend/static/frontend", "frontend/index.html"]
+
+# TAILWIND
+# TODO @ jacob - make this watch file changes?
+[tasks.start-tw]
+workspace = false
+watch = { watch = [
+  "./frontend/styles/index.css",
+  "./frontend/src",
+], ignore_pattern = "./frontend/**/tailwind.css" }
+command = "docker"
+args = ["compose", "up", "tailwind"]
+
+[tasks.build-tw]
+workspace = false
+command = "docker"
+args = ["compose", "up", "tailwind"]
+
+# SERVER
+[tasks.start-server]
+workspace = false
+condition = { profiles = ["development"] }
+watch = { watch = ["./backend"] }
+command = "cargo"
+args = ["run", "-p", "backend"]
+dependencies = ["start-db"]
+
+[tasks.build-server]
+condition = { profiles = ["prod"] }
+command = "cargo"
+args = ["--release", "--bin", "backend"]
+
+# DATABASE
+[tasks.start-db]
+workspace = false
+command = "docker"
+args = ["compose", "up", "-d", "db"]
 
 # =========================================================
-# Production
+# DOCKER COMPOSE
 # =========================================================
+[tasks.compose-build]
+workspace = false
+command = "docker"
+args = ["compose", "build", "${@}"]
 
-# TODO!
+[tasks.compose-up]
+workspace = false
+command = "docker"
+args = ["compose", "up", "${@}"]
 
-# =========================================================
-# Cargo Make Crash Course
-# =========================================================
-# 	-------------------------------------------------------
-# 	Profiles
-# 	-------------------------------------------------------
-# cargo make --profile prooduction or -p development task_name_here
-#
-# 	-------------------------------------------------------
-# 	Environment Variables
-# 	-------------------------------------------------------
-# [env]
-# EVALUATED_VAR = { script = ["echo SOME VALUE"] }
-# TEST1 = "value1"
-# TEST2 = "value2"
-# COMPOSITE = "${TEST1} ${TEST2}"
+[tasks.compose-logs]
+workspace = false
+command = "docker"
+args = ["compose", "logs", "--follow", "--timestamps", "${@}"]
 
-# # profile based environment override
-# [env.development]
-# DEV = true
+[tasks.compose-down]
+workspace = false
+command = "docker"
+args = ["compose", "down", "${@}"]
 
-# [env.production]
-# PROD = true
-#
-# 	-------------------------------------------------------
-# 	Env Files
-# 	-------------------------------------------------------
-# env_files = [
-#     { path = "./second.env", profile = "second_profile" },
-#     { path = "./another.env", profile = "another_profile" }
-# ]
+[tasks.compose-start]
+workspace = false
+command = "docker"
+args = ["compose", "start", "${@}"]
 
-# [config]
-# additional_profiles = ["second_profile", "another_profile"]
+[tasks.compose-stop]
+workspace = false
+command = "docker"
+args = ["compose", "stop", "${@}"]
 
-# [env.second_profile]
-# IS_SECOND_AVAILABLE = true
+[tasks.compose-rm]
+workspace = false
+command = "docker"
+args = ["compose", "rm", "${@}"]
 
-# [env.another_profile]
-# IS_OTHER_AVAILABLE = true
-#
-# 	-------------------------------------------------------
-# 	Scripts
-# 	-------------------------------------------------------
-# [tasks.task_name_B]
-# [tasks.take_name_D]
-# String
-# script: "echo Hi"
-#
-# Multiline string
-# script: '''
-# 	echo Hi
-# '''
-#
-# # Array
-# script: [
-# 	"echo h",
-# 	"echo e",
-# 	"echo l",
-# 	"echo l",
-# 	"echo o",
-# ]
-#
-# 	# File
-# 	script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = true }
-#
-# 	-------------------------------------------------------
-# 	Subtasks
-# 	-------------------------------------------------------
-# [tasks.take_name_C]
-# dependencies = ["task_name_B"] # RUNS BEFORE C
-#
-# 	# Subtask
-# run_task = "task_name_B" # RUNS AFTER C
-#
-# 	# Multiple Substasks with Conditions
-# run_task = [
-#  { name = "test1", condition = { platforms = ["windows", "linux"], channels = ["beta", "stable"] } },
-#  { name = "test2", condition = { platforms = ["mac"], rust_version = { min = "1.20.0", max = "1.30.0" } } },
-#  { name = "test3", condition_script = [ "somecommand" ] },
-# ]
-#
-# Forked Subtask
-# run_task = [
-# 	{ name: "task_name_B", forked: true  }
-# ]
-#
-# Parallel Substasks
-# run_task = { name = ["echo1", "echo2"], parallel = true }
-#
-# 	-------------------------------------------------------
-# 	Conditions
-# 	-------------------------------------------------------
-# [tasks.echo-development]
-# condition = { profiles = [ "development" ] }
-# command = "echo"
-# args = [ "running in development profile" ]
+[tasks.compose-exec]
+workspace = false
+command = "docker"
+args = ["compose", "exec", "${@}"]
 
-# [tasks.echo-production]
-# condition = { profiles = [ "production" ] }
-# command = "echo"
-# args = [ "running in production profile" ]#
+[tasks.compose-ls]
+workspace = false
+command = "docker"
+args = ["compose", "ls", "${@}"]
+
+[tasks.compose-ps]
+workspace = false
+command = "docker"
+args = ["compose", "ps", "${@}"]
+
+[tasks.compose-images]
+workspace = false
+command = "docker"
+args = ["compose", "images", "${@}"]

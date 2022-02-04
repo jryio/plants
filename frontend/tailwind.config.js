@@ -1,7 +1,10 @@
+// IMPORTANT - This tailwind config file will be run within a docker container
 module.exports = {
   mode: 'jit',
-  purge: [
-    "src/**/*.rs"
+  // If we're running one directory higher this shoudl still find our content files
+  content: [
+    "**/index.html",
+    "**/src/**/*.rs"
   ],
   important: true,
   darkMode: false, // or 'media' or 'class'

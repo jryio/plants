@@ -1,7 +1,7 @@
 [package]
 name = "frontend"
 version = "0.1.0"
-edition = "2018"
+edition = "2021"
 readme = "README.md"
 repository = "https://github.com/thebearjew/plantbook"
 
@@ -11,32 +11,38 @@ repository = "https://github.com/thebearjew/plantbook"
 common = { version = "0.1.0", path = "../common" }
 
 # External
-boolinator = "2.0"
+boolinator = { version = "2.0" }
 bounce = { git = "https://github.com/futursolo/bounce.git", rev = "6fee754bcc2685442f508f19fe3b0e7d0914c8e5" }
-chrono = { version = "0.4.19", features = [ "serde", "wasmbind" ] } # Chrono for date diffing -> consider changing this as it is no longer maintained
-getrandom = { version = "0.2.3", features = ["js"] } # This is a dependency of rand which requries the js feature to work
-gloo = "0.5"
-gloo-utils = "0.1"
-rand = "0.8.4"
-reqwasm = "0.4.0"
-serde = { version = "^1.0", features = [ "derive" ] }
+chrono = { version = "0.4.19", features = [
+  "serde",
+  "wasmbind",
+] } # Chrono for date diffing -> consider changing this as it is no longer maintained
+getrandom = { version = "0.2.3", features = [
+  "js",
+] } # This is a dependency of rand which requries the js feature to work
+gloo = { version = "0.5" }
+gloo-utils = { version = "0.1" }
+graphql_client = { version = "0.10" }
+rand = { version = "0.8.4" }
+reqwasm = { version = "0.4.0" }
+serde = { version = "^1.0", features = ["derive"] }
 strum = { version = "0.23", features = ["derive"] }
-wasm-bindgen = "0.2.67"
-wasm-logger = "0.2" # Logging for WASM applications
+wasm-bindgen = { version = "0.2.67" }
+wasm-logger = { version = "0.2" } # Logging for WASM applications
 yew = { version = "0.19.3" }
-yew_form = { path =  "../../yew_form/yew_form" }
-yew_form_derive = { path =  "../../yew_form/yew_form_derive" }
+yew_form = { git = "https://github.com/thebearjew/yew_form", branch = "master" }
+yew_form_derive = { git = "https://github.com/thebearjew/yew_form", branch = "master" }
 
 [dependencies.web-sys]
 version = "0.3"
 features = [
-"Element",
-"EventTarget",
-"Document",
-"HtmlHeadElement",
-"HtmlDivElement",
-"HtmlInputElement",
-"HtmlSelectElement",
-"HtmlTextAreaElement",
-"SvgElement"
+  "Element",
+  "EventTarget",
+  "Document",
+  "HtmlHeadElement",
+  "HtmlDivElement",
+  "HtmlInputElement",
+  "HtmlSelectElement",
+  "HtmlTextAreaElement",
+  "SvgElement",
 ]

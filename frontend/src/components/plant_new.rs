@@ -6,7 +6,7 @@ use yew::prelude::*;
 use yew_form::{Field, File, Form, Select, TextArea};
 
 use crate::components::input::Label;
-use common::{
+use common::models::{
     location::Location,
     person::Person,
     plant::{Plant, PlantConvertError, PlantForm as Model},

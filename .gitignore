@@ -2,4 +2,6 @@ dist
 target
 Cargo.lock
 node_modules
-.env/
+.env/*.prod.env
+backend/static/frontend
+tailwind.css

@@ -2,11 +2,3 @@
 [build]
 target = "index.html"
 dist = "dist"
-
-[[hooks]]
-stage = "build"
-command = "sh"
-command_arguments = [
-  "-c",
-  "npx tailwindcss-cli -c tailwind.config.js -i styles/index.css -o $TRUNK_STAGING_DIR/tailwind.css"
-  ]

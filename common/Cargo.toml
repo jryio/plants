@@ -1,17 +1,18 @@
 [package]
 name = "common"
 version = "0.1.0"
-edition = "2018"
+edition = "2021"
 readme = "README.md"
 repository = "https://github.com/thebearjew/plantbook"
 
 [dependencies]
 anyhow = "1.0"
-serde = { version = "^1.0", features = [ "derive" ] }
+async-graphql = { version = "3.0", features = ["uuid", "chrono", "chrono-tz"] }
+serde = { version = "^1.0", features = ["derive"] }
 strum = { version = "0.23", features = ["derive"] }
 validator = { version = "0.14", features = ["derive"] }
-chrono = { version = "0.4.19", features = [ "serde" ] }
-chrono-tz = { version = "0.6", features = [ "serde"] }
+chrono = { version = "0.4.19", features = ["serde"] }
+chrono-tz = { version = "0.6", features = ["serde"] }
 uuid = { version = "0.8", features = ["serde", "v4"] }
-yew_form = { path =  "../../yew_form/yew_form" }
-yew_form_derive = { path =  "../../yew_form/yew_form_derive" }
+yew_form = { git = "https://github.com/thebearjew/yew_form", branch = "master" }
+yew_form_derive = { git = "https://github.com/thebearjew/yew_form", branch = "master" }
