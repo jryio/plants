@@ -1,6 +1,8 @@
+// IMPORTANT - This tailwind config file will be run within a docker container
 module.exports = {
   mode: 'jit',
   purge: [
+    "index.html",
     "src/**/*.rs"
   ],
   important: true,

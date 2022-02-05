@@ -1,0 +1,41 @@
+version: "3.9"
+# The ${MODE} environment variable is either: "dev" or "prod"
+services:
+  app:                      # ----------------- APP ------------------
+    env_file:               # Load environment variables for the application depending on the ${MODE}
+          - ".env/common.env"
+          - ".env/app.${MODE}.env"
+
+    build:                  # Build the rust application from a custom Dockerfile
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:                # Volumes connect to each crate
+          - type: bind
+            source: "${APP_VOL_COMMON_SOURCE}"
+            target: "${APP_VOL_COMMON_TARGET}"
+          - type: bind
+            source: "${APP_VOL_FRONTEND_SOURCE}"
+            target: "${APP_VOL_FRONTEND_TARGET}"
+          - type: bind
+            source: "${APP_VOL_BACKEND_SOURCE}"
+            target: "${APP_VOL_BACKEND_TARGET}"
+    links:                  # Creates the hostname "database" which points to service "db". Implies "depends_on"
+            - db:database
+    depends_on:             # Make sure service "db" is alive before starting serivce "app"
+            - db
+  db:                       # ----------------- DB -------------------
+    env_file:               # Load environment variables for the database depending on the ${MODE}
+      - ".env/common.env"
+      - ".env/db.${MODE}.env"
+
+    image: postgres:alpine  # Use the postgres image with the alpine tag to cut down on image size
+    restart: always         # Always restart the service on changes
+    volumes:                # TODO @ Figure out what the volume mappings should be
+      - type: bind
+        source: "${DB_VOL_SOURCE}"
+        target: "${DB_VOL_TARGET"
+    expose:                 # The expose command makes a port available to other services NOT to the host
+      - "${DB_PORT_CONTAINER}"
+    ports:
+      - "${DB_PORT_CONTAINER}:${DB_PORT_HOST}"
