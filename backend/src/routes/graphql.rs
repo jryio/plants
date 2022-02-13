@@ -1,13 +1,13 @@
+use crate::schema::PlantbookSchema;
 use async_graphql::{
     http::{playground_source, GraphQLPlaygroundConfig},
-    EmptyMutation, EmptySubscription, Request, Response, Schema,
+    Request, Response,
 };
 use axum::{
     extract::Extension,
     response::{Html, IntoResponse},
     Json,
 };
-use common::schema::PlantbookSchema;
 
 pub async fn handle_get_playground() -> impl IntoResponse {
     // GraphQLPlaygroundConfig can be given

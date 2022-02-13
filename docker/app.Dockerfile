@@ -14,6 +14,12 @@ RUN cargo install --locked \
   cargo-make \
   trunk
 
+# TODO @ jacob - Might not need this
+RUN cargo install --locked \
+  sqlx-cli \
+  --no-default-features \
+  --features native-tls,postgres
+
 # We need to make sure we have the wasm target for our Yew app
 RUN rustup target add wasm32-unknown-unknown
 
