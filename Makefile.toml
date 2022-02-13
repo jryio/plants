@@ -28,6 +28,15 @@ MODE = "dev"
 MDOE = "prod"
 
 # =========================================================
+# CONFIG
+# =========================================================
+[config]
+# Disable pre-defined cargo make tasks
+skip_core_tasks = true
+# Make tasks run at the workspace root instead of on all crates
+default_to_workspace = false
+
+# =========================================================
 # BUILD SCRIPTS
 # =========================================================
 [tasks.start]
@@ -36,7 +45,7 @@ MDOE = "prod"
 # - Start frontennd
 # - Write a cleanup flow of tasks that undoes everything in "start
 #   Mainly shutting down docker containers like DB and TW
-workspace = false
+category = "Build"
 condition = { profiles = ["development"] }
 run_task = [
   { name = [
@@ -50,6 +59,7 @@ run_task = [
 
 # WEB
 [tasks.start-web]
+category = "Build"
 condition = { profiles = ["development"] }
 watch = { watch = ["./src/"] }
 command = "trunk"
@@ -57,7 +67,7 @@ args = ["serve"]
 dependencies = ["start-tw"]
 
 [tasks.build-web]
-workspace = false
+category = "Build"
 condition = { profiles = ["prod"] }
 command = "trunk"
 args = ["build", "--dist", "backend/static/frontend", "frontend/index.html"]
@@ -65,7 +75,7 @@ args = ["build", "--dist", "backend/static/frontend", "frontend/index.html"]
 # TAILWIND
 # TODO @ jacob - make this watch file changes?
 [tasks.start-tw]
-workspace = false
+category = "Build"
 watch = { watch = [
   "./frontend/styles/index.css",
   "./frontend/src",
@@ -74,13 +84,13 @@ command = "docker"
 args = ["compose", "up", "tailwind"]
 
 [tasks.build-tw]
-workspace = false
+category = "Build"
 command = "docker"
 args = ["compose", "up", "tailwind"]
 
 # SERVER
 [tasks.start-server]
-workspace = false
+category = "Build"
 condition = { profiles = ["development"] }
 watch = { watch = ["./backend"] }
 command = "cargo"
@@ -88,70 +98,102 @@ args = ["run", "-p", "backend"]
 dependencies = ["start-db"]
 
 [tasks.build-server]
+category = "Build"
 condition = { profiles = ["prod"] }
 command = "cargo"
 args = ["--release", "--bin", "backend"]
 
 # DATABASE
 [tasks.start-db]
-workspace = false
+category = "Build"
 command = "docker"
 args = ["compose", "up", "-d", "db"]
 
+[tasks.psql]
+category = "SQL"
+command = "docker"
+args = ["exec", "-it", "db", "psql"]
+
+[tasks.migrate-add]
+category = "SQL"
+command = "sqlx"
+args = ["migrate", "add", "--source", "backend/sql/migrations", "${@}"]
+
+[tasks.migrate-revert]
+category = "SQL"
+env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}" }
+command = "sqlx"
+args = ["migrate", "revert", "--source", "backend/sql/migrations", "${@}"]
+
+[tasks.migrate-run]
+category = "SQL"
+env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}" }
+command = "sqlx"
+args = ["migrate", "run", "--source", "backend/sql/migrations", "${@}"]
+
 # =========================================================
-# DOCKER COMPOSE
+# DOCKER COMPOSE - Run with values fron `env` files
 # =========================================================
 [tasks.compose-build]
-workspace = false
+category = "Docker"
 command = "docker"
 args = ["compose", "build", "${@}"]
 
 [tasks.compose-up]
-workspace = false
+category = "Docker"
 command = "docker"
 args = ["compose", "up", "${@}"]
 
 [tasks.compose-logs]
-workspace = false
+category = "Docker"
 command = "docker"
 args = ["compose", "logs", "--follow", "--timestamps", "${@}"]
 
 [tasks.compose-down]
-workspace = false
+category = "Docker"
 command = "docker"
 args = ["compose", "down", "${@}"]
 
 [tasks.compose-start]
-workspace = false
+category = "Docker"
 command = "docker"
 args = ["compose", "start", "${@}"]
 
 [tasks.compose-stop]
-workspace = false
+category = "Docker"
 command = "docker"
 args = ["compose", "stop", "${@}"]
 
 [tasks.compose-rm]
-workspace = false
+category = "Docker"
 command = "docker"
 args = ["compose", "rm", "${@}"]
 
 [tasks.compose-exec]
-workspace = false
+category = "Docker"
 command = "docker"
 args = ["compose", "exec", "${@}"]
 
 [tasks.compose-ls]
-workspace = false
+category = "Docker"
 command = "docker"
 args = ["compose", "ls", "${@}"]
 
 [tasks.compose-ps]
-workspace = false
+category = "Docker"
 command = "docker"
 args = ["compose", "ps", "${@}"]
 
 [tasks.compose-images]
-workspace = false
+category = "Docker"
 command = "docker"
 args = ["compose", "images", "${@}"]
+
+# =========================================================
+# HELP
+# =========================================================
+[tasks.help]
+category = "Help"
+description = "List all tasks"
+command = "cargo"
+args = ["make", "--list-all-steps"]

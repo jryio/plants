@@ -1,3 +1,6 @@
+[alias]
+m = "make"
+
 [package]
 name = "backend"
 version = "0.1.0"
@@ -6,10 +9,21 @@ readme = "README.md"
 repository = "https://github.com/thebearjew/plantbook"
 
 [dependencies]
-axum = { version = "^0.4" }
+anyhow = { version = "^1.0" }
 async-graphql = { version = "3.0" }
+axum = { version = "^0.4" }
+chrono = { version = "0.4.19", features = ["serde"] }
+chrono-tz = { version = "0.6", features = ["serde"] }
 common = { path = "../common" }
+serde = { version = "^1.0", features = ["derive"] }
+sqlx = { version = "0.5", features = [
+  "runtime-tokio-native-tls",
+  "postgres",
+  "chrono",
+  "uuid",
+] }
+strum = { version = "0.23", features = ["derive"] }
 tokio = { version = "1.0", features = ["full"] }
 tracing = { version = "0.1" } # Also known as loggingtracing = "0.1" # Also known as logging
-serde = { version = "^1.0", features = [ "derive" ] }
-tracing-subscriber = { version="0.3", features = ["env-filter"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "0.8", features = ["serde", "v4"] }
