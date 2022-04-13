@@ -117,19 +117,19 @@ args = ["exec", "-it", "db", "psql"]
 [tasks.migrate-add]
 category = "SQL"
 command = "sqlx"
-args = ["migrate", "add", "--source", "backend/sql/migrations", "${@}"]
+args = ["migrate", "--source", "backend/sql/migrations", "add", "${@}"]
 
-[tasks.migrate-revert]
+[tasks.migrate-down]
 category = "SQL"
 env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}" }
 command = "sqlx"
-args = ["migrate", "revert", "--source", "backend/sql/migrations", "${@}"]
+args = ["migrate", "--source", "backend/sql/migrations", "revert", "${@}"]
 
-[tasks.migrate-run]
+[tasks.migrate-up]
 category = "SQL"
 env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}" }
 command = "sqlx"
-args = ["migrate", "run", "--source", "backend/sql/migrations", "${@}"]
+args = ["migrate", "--source", "backend/sql/migrations", "run", "${@}"]
 
 # =========================================================
 # DOCKER COMPOSE - Run with values fron `env` files
@@ -173,6 +173,11 @@ args = ["compose", "rm", "${@}"]
 category = "Docker"
 command = "docker"
 args = ["compose", "exec", "${@}"]
+
+[tasks.compose-ssh]
+category = "Docker"
+command = "docker"
+args = ["compose", "exec", "${@}", "bash", "-l"]
 
 [tasks.compose-ls]
 category = "Docker"
