@@ -40,7 +40,7 @@ FROM chef AS builder
 
 COPY --from=planner /app/recipe.json recipe.json
 
-RUN cargo chef cook \
+RUN SQLX_OFFLINE=true cargo chef cook \
   --release \
   --recipe-path recipe.json
 
@@ -62,12 +62,18 @@ RUN cargo build \
 FROM debian:buster-slim AS runner
 
 # I think that every time we change the image we need to re-define the workdir
+#
+# Create directories for the following env variables
+# APP_VOL_COMMON_TARGET
+# APP_VOL_FRONT_TARGET
+# APP_VOL_BACK_TARGET
 WORKDIR /app
+RUN mkdir -p common frontend backend
 
 # Executable will be placed at /app/backend
 COPY --from=builder \
   /app/target/release/backend \
-  .
+  /usr/local/bin/backend
 # Move static assets to runner image
 RUN mkdir -p static
 COPY --from=builder \

@@ -5,10 +5,10 @@ The input/output is a string in RFC3339 format.
 """
 scalar DateTime
 enum Location {
-	LIVING_ROOM
-	KITCHEN
-	DINING_ROOM
-	BEDROOM
+	LivingRoom
+	Kitchen
+	DiningRoom
+	Bedroom
 }
 enum Person {
 	JACOB
@@ -24,13 +24,13 @@ type Plant {
 	location: Location!
 	birthday: DateTime!
 	image: String!
-	waterFrequency: Int!
-	waterInstructions: String!
+	wateringFrequency: Int!
+	wateringInstructions: String!
 	lastWateredDate: DateTime!
 	lastWateredBy: Person!
 }
 type QueryRoot {
-	plants: Plant!
+	plants: [Plant!]!
 }
 """
 A UUID is a unique 128-bit number, stored as 16 octets. UUIDs are parsed as Strings

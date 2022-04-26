@@ -34,7 +34,7 @@ async fn main() -> Result<(), anyhow::Error> {
 
     let routes = Routes::all();
     let schema = Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
-        .data(pool)
+        .data(pool) // Database connection pool added as async_graphql Context here
         .finish();
     let app = routes.layer(AddExtensionLayer::new(schema.clone()));
 

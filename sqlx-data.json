@@ -1,0 +1,69 @@
+{
+  "db": "PostgreSQL",
+  "0848713216a154e517b88bdc87b4f42f8a5167629401014cad23d892ea709ddd": {
+    "query": "\n            select\n                plants.id as \"id!\",\n                plants.name as \"name!\",\n                locs.name as \"location!: Location\",\n                birthday as \"birthday!\",\n                image as \"image!\",\n                watering_frequency as \"watering_frequency!\",\n                watering_instructions as \"watering_instructions!\",\n                last_watered_date as \"last_watered_date!\",\n                last_watered_by as \"last_watered_by!: Person\"\n            from plants\n            join locations as locs\n                on plants.location = locs.id\n            join people as ppl\n                on plants.last_watered_by = ppl.id\n            ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id!",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 1,
+          "name": "name!",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "location!: Location",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 3,
+          "name": "birthday!",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 4,
+          "name": "image!",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 5,
+          "name": "watering_frequency!",
+          "type_info": "Int2"
+        },
+        {
+          "ordinal": 6,
+          "name": "watering_instructions!",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 7,
+          "name": "last_watered_date!",
+          "type_info": "Timestamptz"
+        },
+        {
+          "ordinal": 8,
+          "name": "last_watered_by!: Person",
+          "type_info": "Uuid"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    }
+  }
+}

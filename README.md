@@ -60,3 +60,7 @@ read from other services?
 **Pre-populating Volumes**: to propulate a volume with files, we will first need to place the file
 inside the **container**. Then when the volume is created for the first time,
 the contents from the container will be copied over to the shared volume
+
+## Prior Work & References
+
+[Jesse Hallett's Talk on Writing GraphQL Servers in Rust from the RustNYC Meetup](https://github.com/hallettj/rust_graphql_server_demo)

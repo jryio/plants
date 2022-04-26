@@ -15,9 +15,11 @@ services:
     env_file:               # Load environment variables for the application depending on the ${MODE}
       - "./env/common.env"
       - "./env/app.${MODE:-dev}.env"
+      - "./env/db.${MODE:-dev}.env"
     environment:
-      DB_CONNECT_STRING: "postgres://" # TODO FILL THIS OUT
-    build:                  # Build the rust application from a custom Dockerfile
+      DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_CONTAINER}/${POSTGRES_DB}"
+      SQLX_OFFLINE: "${SQLX_OFFLINE}"
+    build:                  # build the rust application from a custom dockerfile
       context: .            # By adding context here, our dockerfile will see the root dir structure
       dockerfile: ./docker/app.Dockerfile
     volumes:                # Bind source code changes to docker container

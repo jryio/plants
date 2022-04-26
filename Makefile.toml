@@ -103,7 +103,9 @@ condition = { profiles = ["prod"] }
 command = "cargo"
 args = ["--release", "--bin", "backend"]
 
+# =========================================================
 # DATABASE
+# =========================================================
 [tasks.start-db]
 category = "Build"
 command = "docker"
@@ -111,8 +113,9 @@ args = ["compose", "up", "-d", "db"]
 
 [tasks.psql]
 category = "SQL"
-command = "docker"
-args = ["exec", "-it", "db", "psql"]
+env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}" }
+command = "psql"
+args = ["${DATABASE_URL}"]
 
 [tasks.migrate-add]
 category = "SQL"
@@ -131,6 +134,12 @@ env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_
 command = "sqlx"
 args = ["migrate", "--source", "backend/sql/migrations", "run", "${@}"]
 
+[tasks.migrate-prepare]
+category = "SQL"
+env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}" }
+command = "cargo"
+args = ["sqlx", "prepare", "--merged"]
+
 # =========================================================
 # DOCKER COMPOSE - Run with values fron `env` files
 # =========================================================
@@ -148,6 +157,11 @@ args = ["compose", "up", "${@}"]
 category = "Docker"
 command = "docker"
 args = ["compose", "logs", "--follow", "--timestamps", "${@}"]
+
+[tasks.compose-logs-nofollow]
+category = "Docker"
+command = "docker"
+args = ["compose", "logs", "--timestamps", "${@}"]
 
 [tasks.compose-down]
 category = "Docker"
