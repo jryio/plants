@@ -6,13 +6,13 @@ readme = "README.md"
 repository = "https://github.com/thebearjew/plantbook"
 
 [dependencies]
-anyhow = "1.0"
-async-graphql = { version = "3.0", features = ["uuid", "chrono", "chrono-tz"] }
-serde = { version = "^1.0", features = ["derive"] }
-strum = { version = "0.23", features = ["derive"] }
-validator = { version = "0.14", features = ["derive"] }
-chrono = { version = "0.4.19", features = ["serde"] }
-chrono-tz = { version = "0.6", features = ["serde"] }
-uuid = { version = "0.8", features = ["serde", "v4"] }
+anyhow = "1.0.65"
+async-graphql = { version = "4.0.15", features = ["uuid", "chrono", "chrono-tz"] }
+serde = { version = "1.0.145", features = ["derive"] }
+strum = { version = "0.24.1", features = ["derive"] }
+validator = { version = "0.16.0", features = ["derive"] }
+chrono = { version = "0.4.22", features = ["serde"] }
+chrono-tz = { version = "0.6.3", features = ["serde"] }
+uuid = { version = "1.2.1", features = ["serde", "v4"] }
 yew_form = { git = "https://github.com/thebearjew/yew_form", branch = "master" }
 yew_form_derive = { git = "https://github.com/thebearjew/yew_form", branch = "master" }

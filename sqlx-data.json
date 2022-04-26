@@ -1,0 +1,159 @@
+{
+  "db": "PostgreSQL",
+  "069a120476a06940216f6b4d3e8de4c15b9e40ffa0a873c29053bf41adac3ff3": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name!",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "location!: Location",
+          "ordinal": 2,
+          "type_info": "Record"
+        },
+        {
+          "name": "birthday!",
+          "ordinal": 3,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "image!",
+          "ordinal": 4,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "watering_frequency!",
+          "ordinal": 5,
+          "type_info": "Int2"
+        },
+        {
+          "name": "watering_instructions!",
+          "ordinal": 6,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "last_watered_date!",
+          "ordinal": 7,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "last_watered_by!: Person",
+          "ordinal": 8,
+          "type_info": "Record"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        null,
+        true,
+        false,
+        true,
+        false,
+        false,
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n            select\n                plants.id as \"id!\",\n                plants.name as \"name!\",\n                (locs.id, locs.name) as \"location!: Location\",\n                birthday as \"birthday!\",\n                image as \"image!\",\n                watering_frequency as \"watering_frequency!\",\n                watering_instructions as \"watering_instructions!\",\n                last_watered_date as \"last_watered_date!\",\n                (ppl.id, ppl.name) as \"last_watered_by!: Person\"\n           from plants\n           join locations as locs\n                on plants.location = locs.id\n           join people as ppl\n                on plants.last_watered_by = ppl.id\n            "
+  },
+  "1c5f8ecbb385a8258069bd1f5b01f966d2b1e7498e297c16c30b1ad48349ea07": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name!",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "select id as \"id!\", name as \"name!\" from people"
+  },
+  "a096991be6addc6bf1ff45d250d6b38c0540c2112d8d8f50367ef15e4cdad836": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name!",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "select id as \"id!\", name as \"name!\" from locations"
+  },
+  "ffb18b43969c22067cfa7526c7630569116ac47a4aa7b445a118ed2e41c49373": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "plant_id!",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "person_id!",
+          "ordinal": 2,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "ctime!",
+          "ordinal": 3,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "notes!",
+          "ordinal": 4,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n            select\n                id as \"id!\",\n                plant_id as \"plant_id!\",\n                person_id as \"person_id!\",\n                ctime as \"ctime!\",\n                notes as \"notes!\"\n            from watering_events\n            "
+  }
+}

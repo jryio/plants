@@ -10,8 +10,10 @@
 # Values will be used in docker-compose.yaml
 env_files = [
   { path = "./env/common.env" },
+  # App env files
   { path = "./env/app.dev.env", profile = "development" },
   { path = "./env/app.prod.env", profile = "prod" },
+  # DB env files
   { path = "./env/db.dev.env", profile = "development" },
   { path = "./env/db.prod.env", profile = "prod" },
 ]
@@ -23,12 +25,13 @@ CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
 
 [env.development]
 MODE = "dev"
+DATABASE_URL = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}"
 
 [env.prod]
-MDOE = "prod"
+MODE = "prod"
 
 # =========================================================
-# CONFIG
+# GLOBAL CONFIG
 # =========================================================
 [config]
 # Disable pre-defined cargo make tasks
@@ -73,7 +76,7 @@ command = "trunk"
 args = ["build", "--dist", "backend/static/frontend", "frontend/index.html"]
 
 # TAILWIND
-# TODO @ jacob - make this watch file changes?
+# TODO: @ jacob - make this watch file changes?
 [tasks.start-tw]
 category = "Build"
 watch = { watch = [
@@ -91,19 +94,21 @@ args = ["compose", "up", "tailwind"]
 # SERVER
 [tasks.start-server]
 category = "Build"
-condition = { profiles = ["development"] }
+env = { "APP_PORT" = "${APP_PORT_HOST}" }
+condition = { profiles = ["development"], env_set = ["DATABASE_URL"] }
 watch = { watch = ["./backend"] }
 command = "cargo"
-args = ["run", "-p", "backend"]
-dependencies = ["start-db"]
+args = ["run", "--package", "backend"]
 
 [tasks.build-server]
 category = "Build"
 condition = { profiles = ["prod"] }
 command = "cargo"
-args = ["--release", "--bin", "backend"]
+args = ["build", "--package", "backend", "--release", "--bin", "backend"]
 
+# =========================================================
 # DATABASE
+# =========================================================
 [tasks.start-db]
 category = "Build"
 command = "docker"
@@ -111,8 +116,15 @@ args = ["compose", "up", "-d", "db"]
 
 [tasks.psql]
 category = "SQL"
-command = "docker"
-args = ["exec", "-it", "db", "psql"]
+env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}" }
+command = "psql"
+args = ["${DATABASE_URL}"]
+
+[tasks.db-fake-data]
+category = "SQL"
+env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}" }
+command = "psql"
+args = ["${DATABASE_URL}", "-f", "backend/sql/data/dev-data.sql"]
 
 [tasks.migrate-add]
 category = "SQL"
@@ -131,6 +143,12 @@ env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_
 command = "sqlx"
 args = ["migrate", "--source", "backend/sql/migrations", "run", "${@}"]
 
+[tasks.migrate-prepare]
+category = "SQL"
+env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}" }
+command = "cargo"
+args = ["sqlx", "prepare", "--merged"]
+
 # =========================================================
 # DOCKER COMPOSE - Run with values fron `env` files
 # =========================================================
@@ -148,6 +166,11 @@ args = ["compose", "up", "${@}"]
 category = "Docker"
 command = "docker"
 args = ["compose", "logs", "--follow", "--timestamps", "${@}"]
+
+[tasks.compose-logs-nofollow]
+category = "Docker"
+command = "docker"
+args = ["compose", "logs", "--timestamps", "${@}"]
 
 [tasks.compose-down]
 category = "Docker"
@@ -201,4 +224,4 @@ args = ["compose", "images", "${@}"]
 category = "Help"
 description = "List all tasks"
 command = "cargo"
-args = ["make", "--list-all-steps"]
+args = ["make", "--list-all-steps", "--quiet"]

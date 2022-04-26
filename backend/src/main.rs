@@ -11,16 +11,17 @@ use routes::Routes;
 use schema::{PlantbookSchema, QueryRoot};
 
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
-use axum::AddExtensionLayer;
+use axum::Extension;
 
-fn export_schema(schema: PlantbookSchema) {
+fn export_schema(schema: PlantbookSchema) -> anyhow::Result<()> {
     // Export the GraphQL schema in SDL format
     let sdl = &schema.sdl();
-    let schema_path = PathBuf::from("schema.graphql");
-    match fs::write(schema_path, sdl) {
-        Ok(_) => println!("Exported graphql to schema.graphql"),
-        Err(e) => panic!("Failed to wrie GraphQL schema file. Error = {e}"),
-    }
+    let mut schema_path = project_root::get_project_root()?;
+    let schema_filename = PathBuf::from("schema.graphql");
+    schema_path.push(schema_filename);
+    fs::write(schema_path, sdl)?;
+    println!("Exported graphql schema");
+    Ok(())
 }
 
 #[tokio::main]
@@ -34,11 +35,11 @@ async fn main() -> Result<(), anyhow::Error> {
 
     let routes = Routes::all();
     let schema = Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
-        .data(pool)
+        .data(pool) // Database connection pool added as async_graphql Context here
         .finish();
-    let app = routes.layer(AddExtensionLayer::new(schema.clone()));
+    let app = routes.layer(Extension(schema.clone()));
 
-    export_schema(schema.clone());
+    export_schema(schema.clone())?;
 
     let addr = env::get_app_url()?;
 

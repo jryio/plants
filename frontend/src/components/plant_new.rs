@@ -1,5 +1,4 @@
 use bounce::prelude::*;
-use gloo::console::debug;
 use std::convert::TryFrom;
 use strum::{IntoEnumIterator, VariantNames};
 use yew::prelude::*;

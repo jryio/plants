@@ -5,22 +5,33 @@ version: "3.9"
 # way to disable this behavior. Instead, explicitly pass in /dev/null as a
 # the .env file path to force docker compose to ignore our .env directory.
 services:
-  app:                      # ----------------- APP ------------------
-    container_name: app     # Use container_name for docker exec access
-    links:                  # Creates the hostname "database" which points to service "db". Implies "depends_on"
+
+  # ------------------------------------------------- App  ------------------------------------------------------------
+  app:
+    container_name: app                               # Use container_name for docker exec access
+    links:                                            # Creates the hostname "database" which points to service "db". Implies "depends_on"
       - db:database
-    depends_on:             # Make sure service "db" is alive before starting serivce "app"
+    depends_on:                                       # Make sure service "db" is alive before starting serivce "app"
       - tailwind
       - db
-    env_file:               # Load environment variables for the application depending on the ${MODE}
+    env_file:                                         # Load environment variables for the application depending on the ${MODE}
       - "./env/common.env"
       - "./env/app.${MODE:-dev}.env"
+      - "./env/db.${MODE:-dev}.env"
     environment:
-      DB_CONNECT_STRING: "postgres://" # TODO FILL THIS OUT
-    build:                  # Build the rust application from a custom Dockerfile
-      context: .            # By adding context here, our dockerfile will see the root dir structure
+                                                      # Bind address for the application (0.0.0.0 most likely)
+      DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_CONTAINER_NAME}:${DB_PORT_CONTAINER}/${POSTGRES_DB}"
+
+      APP_HOST_NAME: "${APP_HOST_NAME}"
+                                                      # Use the container's port because inter-service networking requires it rather than host port
+      APP_PORT: "${APP_PORT_CONTAINER}"
+                                                      # Disable SQLX from connecting to live DB on application startup
+                                                      # TODO: @ Jacob - Do we always need to update sqlx-json before building this image?
+      SQLX_OFFLINE: "${SQLX_OFFLINE}"
+    build:                                            # build the rust application from a custom dockerfile
+      context: .                                      # By adding context here, our dockerfile will see the root dir structure
       dockerfile: ./docker/app.Dockerfile
-    volumes:                # Bind source code changes to docker container
+    volumes:                                          # Bind source code changes to docker container
       - type: bind
         source: "${APP_VOL_COMMON_SOURCE}"
         target: "${APP_VOL_COMMON_TARGET}"
@@ -36,20 +47,21 @@ services:
       - "${APP_PORT_HOST}:${APP_PORT_CONTAINER}"
     command: ["/usr/local/bin/backend"]
 
-  tailwind:                 # -------------- Tailwind ----------------
+  # ------------------------------------------------- Tailwind --------------------------------------------------------
+  tailwind:
     container_name: tailwind
-    env_file:               # Load input and output paths from common.env
+    env_file:                                         # Load input and output paths from common.env
       - "./env/common.env"
     build:
-      context: .            # By adding ocntext here, our dockerfile will see the root dir structure
+      context: .                                      # By adding ocntext here, our dockerfile will see the root dir structure
       args:
         tw_config_path: "${TW_CONFIG_PATH}"
       dockerfile: ./docker/tailwind.Dockerfile
     volumes:
-      - type: bind          # Bind TW_HOST_INPUT_DIR (frontend) to container /tailwind/input
+      - type: bind                                    # Bind TW_HOST_INPUT_DIR (frontend) to container /tailwind/input
         source: "${TW_HOST_INPUT_DIR}"
         target: "/tailwind/input"
-      - type: bind          # Bind TW_HOST_OUTPUT_DIR (frontend/dist) to container /tailwind/output
+      - type: bind                                    # Bind TW_HOST_OUTPUT_DIR (frontend/dist) to container /tailwind/output
         source: "${TW_HOST_OUTPUT_DIR}"
         target: /tailwind/output
       # - "tailwind_output:/tailwind/output"
@@ -59,23 +71,24 @@ services:
       "/bin/sh",
       "tailwind.build.sh" ]
 
-  db:                       # ----------------- DB -------------------
+  # ------------------------------------------------- DB --------------------------------------------------------------
+  db:
     container_name: db
-    env_file:               # Load environment variables for the database depending on the ${MODE}
+    env_file:                                         # Load environment variables for the database depending on the ${MODE}
       - "./env/common.env"
       - "./env/db.${MODE:-dev}.env"
-    image: postgres:alpine  # Use the postgres image with the alpine tag to cut down on image size
-    restart: always         # Always restart the service on changes
-    volumes:                # TODO @ Figure out what the volume mappings should be
+    image: postgres:alpine                            # Use the postgres image with the alpine tag to cut down on image size
+    restart: always                                   # Always restart the service on changes
+    volumes:                                          # TODO: @ Jacob - Figure out what the volume mappings should be
       - type: volume
         source: vol_db
         target: /var/lib/postgresql/data
-    expose:                 # The expose command makes a port available to other services NOT to the host
+    expose:                                           # The expose command makes a port available to other services NOT to the host
       - "${DB_PORT_CONTAINER}"
     ports:
       - "${DB_PORT_HOST}:${DB_PORT_CONTAINER}"
 
-volumes:                    # -------------- Volumes ----------------
-  vol_tw:                   # Create a volume to store the tailwind build output
-  vol_db:                   # Create a persistent database volum
+volumes:                                              # -------------- Volumes ----------------
+  vol_tw:                                             # Create a volume to store the tailwind build output
+  vol_db:                                             # Create a persistent database volum
     driver: local

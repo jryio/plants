@@ -31,6 +31,7 @@ VOLUME /tailwind/input
 VOLUME /tailwind/output
 
 COPY scripts/tailwind.build.sh .
+
 # By placing this config @ /tailwind/input/tailwind.config.js
 # its "purge" paths will remain relative
 COPY $tw_config_path input/tailwind.config.js

@@ -1,7 +1,6 @@
 use std::env::{set_var, var_os};
 use std::ffi::OsString;
 use std::net::SocketAddr;
-use strum::Display;
 
 /*
 TODO @ jacob:
@@ -11,7 +10,7 @@ TODO @ jacob:
 
 const EG_CONN_STR: &str = "";
 
-#[derive(Display, Debug)]
+#[derive(strum::Display, Debug)]
 #[allow(dead_code)]
 // Map environment variables to Rust enums
 pub enum Env {
@@ -19,10 +18,12 @@ pub enum Env {
     RustLog,
     #[strum(serialize = "APP_HOST_NAME")]
     AppHost,
-    #[strum(serialize = "APP_PORT_HOST")]
+    #[strum(serialize = "APP_PORT")]
     AppPort,
+    #[strum(serialize = "DATABASE_URL")]
+    DbURL,
     #[strum(serialize = "DB_HOST_NAME")]
-    DbHost,
+    DbAddr,
     #[strum(serialize = "DB_PORT_HOST")]
     DbPort,
     #[strum(serialize = "POSTGRES_DB")]
@@ -33,24 +34,34 @@ pub enum Env {
     DbPassword,
 }
 
-#[derive(Display, Debug)]
+#[derive(Debug)]
 pub enum EnvError {
     Missing(String),
     Invalid(String),
+}
+impl std::fmt::Display for EnvError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Missing(s) => write!(f, "Env Variable Misisng: {}", s),
+            Self::Invalid(s) => write!(f, "Env Variable Invalid: {}", s),
+        }
+    }
 }
 impl std::error::Error for EnvError {}
 
 // Ignore the return value, but pass along the error String
 pub fn require_env_vars() -> Result<(), anyhow::Error> {
     get_rust_log()?;
+    if get_db_url().is_ok() {
+        return Ok(());
+    }
     get_app_host().map(|_| ())?;
     get_app_port().map(|_| ())?;
-    get_db_host().map(|_| ())?;
+    get_db_addr().map(|_| ())?;
     get_db_port().map(|_| ())?;
     get_db_name().map(|_| ())?;
     get_db_user().map(|_| ())?;
     get_db_password().map(|_| ())?;
-    get_db_url().map(|_| ())?;
     Ok(()) // All required environment variables are present
 }
 
@@ -102,9 +113,15 @@ pub fn get_app_port() -> Result<OsString, anyhow::Error> {
 }
 
 pub fn get_db_url() -> Result<String, anyhow::Error> {
-    let host = get_db_host()?
+    if let Some(db_url) = var_os(Env::DbURL.to_string()) {
+        let db_url = db_url
+            .into_string()
+            .map_err(|_| EnvError::Invalid(format!("{} invalid utf8", Env::DbPort)))?;
+        return Ok(db_url);
+    }
+    let addr = get_db_addr()?
         .into_string()
-        .map_err(|_| EnvError::Invalid(format!("{} is invalid utf8", Env::DbHost)))?;
+        .map_err(|_| EnvError::Invalid(format!("{} is invalid utf8", Env::DbAddr)))?;
 
     let port = get_db_port()?
         .into_string()
@@ -122,15 +139,15 @@ pub fn get_db_url() -> Result<String, anyhow::Error> {
         .into_string()
         .map_err(|_| EnvError::Invalid(format!("{} invalid utf8", Env::DbPassword)))?;
 
-    let url = format!("postgres://{user}:{password}@{host}:{port}/{name}");
+    let url = format!("postgres://{user}:{password}@{addr}:{port}/{name}");
     Ok(url)
 }
 
-pub fn get_db_host() -> Result<OsString, anyhow::Error> {
-    var_os(Env::DbHost.to_string()).ok_or_else(|| {
+pub fn get_db_addr() -> Result<OsString, anyhow::Error> {
+    var_os(Env::DbAddr.to_string()).ok_or_else(|| {
         EnvError::Missing(format!(
             "Database host (env var {}) is required to connect to the database e.g. {}",
-            Env::DbHost,
+            Env::DbAddr,
             EG_CONN_STR
         ))
         .into()

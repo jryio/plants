@@ -1,7 +1,15 @@
 -- Add down migration script here
 set timezone = 'UTC';
 
--- Drop order matters. First plants table depends on people and locations
+-- Drop order matters
+-- n. table A -> (references) table B, C, D, ...
+--
+-- 1. watering_events -> plants, people
+-- 2. plants -> people, locations
+-- 3. people -> ...
+-- 4. locations -> ...
+drop table if exists watering_events;
+
 drop table if exists plants;
 
 drop table if exists locations;

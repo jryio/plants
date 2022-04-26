@@ -1,41 +1,83 @@
+
 """
 Implement the DateTime<Utc> scalar
 
 The input/output is a string in RFC3339 format.
 """
 scalar DateTime
-enum Location {
-	LIVING_ROOM
-	KITCHEN
-	DINING_ROOM
-	BEDROOM
+
+
+
+
+type Location {
+	id: UUID!
+	name: String!
 }
-enum Person {
-	JACOB
-	MAGDA
-	NONE
+
+type Person {
+	id: UUID!
+	name: String!
 }
+
 """
-A Plant lives in a location in the house, has a name, and has some instructions. It also knows when it was born and who watered it last
+A Plant lives in a location in the house, has a name, and has some instructions. It also knows
+when it was born and who watered it last.
 """
 type Plant {
 	id: UUID!
 	name: String!
-	location: Location!
 	birthday: DateTime!
 	image: String!
-	waterFrequency: Int!
-	waterInstructions: String!
+	wateringFrequency: Int!
+	wateringInstructions: String!
 	lastWateredDate: DateTime!
+	"""
+	location is the associated Location type including its id and name
+	"""
+	location: Location!
+	"""
+	last_watered_by is the associated Person type including its id and name
+	"""
 	lastWateredBy: Person!
 }
+
 type QueryRoot {
-	plants: Plant!
+	plants: [Plant!]!
+	"""
+	Get exactly one plant by its UUID
+	"""
+	plant(plantId: UUID!): Plant!
+	"""
+	locations() returns all of the locations where plants live. Create a new location if one does
+	not already exist for the room the plant is in.
+	"""
+	locations: [Location!]!
+	"""
+	location() returns the id and name of a single loaction by its Uuid.
+	"""
+	location(locationId: UUID!): Location!
+	"""
+	people() returns all of the people in the household who can water plants
+	"""
+	people: [Person!]!
+	person(personId: UUID!): Person!
+	"""
+	watering_events() returns all of the times which a plant was watered, including which plant,
+	which person, what time, a photograph, and notes about the plant or watering event at the
+	time.
+	"""
+	wateringEvents: [WateringEvent!]!
+	"""
+	watering_event() returns the information for a single WateringEvent
+	"""
+	wateringEvent(wateringEventId: UUID!): WateringEvent!
 }
+
+
 """
-A UUID is a unique 128-bit number, stored as 16 octets. UUIDs are parsed as Strings
-within GraphQL. UUIDs are used to assign unique identifiers to entities without requiring a central
-allocating authority.
+A UUID is a unique 128-bit number, stored as 16 octets. UUIDs are parsed as
+Strings within GraphQL. UUIDs are used to assign unique identifiers to
+entities without requiring a central allocating authority.
 
 # References
 
@@ -43,6 +85,18 @@ allocating authority.
 * [RFC4122: A Universally Unique IDentifier (UUID) URN Namespace](http://tools.ietf.org/html/rfc4122)
 """
 scalar UUID
+
+"""
+When a plant has been watered a watering event is created
+"""
+type WateringEvent {
+	id: UUID!
+	plantId: UUID!
+	personId: UUID!
+	ctime: DateTime!
+	notes: String!
+}
+
 schema {
 	query: QueryRoot
 }

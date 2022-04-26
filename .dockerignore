@@ -2,3 +2,4 @@
 target
 dist
 output
+backend/static/frontend
