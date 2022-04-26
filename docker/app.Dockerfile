@@ -74,6 +74,7 @@ RUN mkdir -p common frontend backend
 COPY --from=builder \
   /app/target/release/backend \
   /usr/local/bin/backend
+
 # Move static assets to runner image
 RUN mkdir -p static
 COPY --from=builder \

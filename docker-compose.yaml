@@ -18,6 +18,12 @@ services:
       - "./env/db.${MODE:-dev}.env"
     environment:
       DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_CONTAINER}/${POSTGRES_DB}"
+                            # Bind address for the application (0.0.0.0 most likely)
+      APP_HOST_NAME: "${APP_HOST_NAME}"
+                            # Use the container's port because inter-service networking requires it rather than host port
+      APP_PORT: "${APP_PORT_CONTAINER}"
+                            # Disable SQLX from connecting to live DB on application startup
+                            # NOTE: May required updating sqlx-data.json
       SQLX_OFFLINE: "${SQLX_OFFLINE}"
     build:                  # build the rust application from a custom dockerfile
       context: .            # By adding context here, our dockerfile will see the root dir structure

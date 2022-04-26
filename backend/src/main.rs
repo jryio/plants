@@ -11,7 +11,7 @@ use routes::Routes;
 use schema::{PlantbookSchema, QueryRoot};
 
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
-use axum::AddExtensionLayer;
+use axum::Extension;
 
 fn export_schema(schema: PlantbookSchema) {
     // Export the GraphQL schema in SDL format
@@ -36,7 +36,7 @@ async fn main() -> Result<(), anyhow::Error> {
     let schema = Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
         .data(pool) // Database connection pool added as async_graphql Context here
         .finish();
-    let app = routes.layer(AddExtensionLayer::new(schema.clone()));
+    let app = routes.layer(Extension(schema.clone()));
 
     export_schema(schema.clone());
 

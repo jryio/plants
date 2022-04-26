@@ -18,7 +18,7 @@ pub enum Env {
     RustLog,
     #[strum(serialize = "APP_HOST_NAME")]
     AppHost,
-    #[strum(serialize = "APP_PORT_HOST")]
+    #[strum(serialize = "APP_PORT")]
     AppPort,
     #[strum(serialize = "DATABASE_URL")]
     DbURL,

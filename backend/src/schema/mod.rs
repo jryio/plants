@@ -1,6 +1,6 @@
 use async_graphql::*;
 use chrono::{DateTime, Utc};
-use uuid::Uuid;
+use sqlx::types::Uuid;
 
 use crate::db;
 
