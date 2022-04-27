@@ -5,9 +5,15 @@
 # - trunk:      our WASM build tool
 # - cargo-chef: efficiently makes docker cache our build process
 # - cargo-make: scrtipt runner through cargo to build and start our apps
-FROM rust:latest AS chef
+#
+# 2022-04-26: We choose Rust version 1.58 because at the time of writing,
+# the rust wasm / yew frontend app does not compile on 1.6
+FROM rust:1.58 AS chef
 
 USER root
+
+# We need to make sure we have the wasm target for our Yew app
+RUN rustup target add wasm32-unknown-unknown
 
 RUN cargo install --locked \
   cargo-chef \
@@ -18,10 +24,7 @@ RUN cargo install --locked \
 RUN cargo install --locked \
   sqlx-cli \
   --no-default-features \
-  --features native-tls,postgres
-
-# We need to make sure we have the wasm target for our Yew app
-RUN rustup target add wasm32-unknown-unknown
+  --features rustls,postgres
 
 WORKDIR /app
 

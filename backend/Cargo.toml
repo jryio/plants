@@ -8,7 +8,7 @@ repository = "https://github.com/thebearjew/plantbook"
 [dependencies]
 anyhow = "1.0.57"
 async-graphql = "3.0.38"
-axum = "0.5.3"
+axum = "0.5.4"
 chrono = { version = "0.4.19", features = ["serde"] }
 chrono-tz = { version = "0.6.1", features = ["serde"] }
 common = { path = "../common" }

@@ -11,9 +11,9 @@ enum Location {
 	Bedroom
 }
 enum Person {
-	JACOB
-	MAGDA
-	NONE
+	Jacob
+	Magda
+	None
 }
 """
 A Plant lives in a location in the house, has a name, and has some instructions. It also knows when it was born and who watered it last

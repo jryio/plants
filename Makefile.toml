@@ -101,7 +101,7 @@ dependencies = ["start-db"]
 category = "Build"
 condition = { profiles = ["prod"] }
 command = "cargo"
-args = ["--release", "--bin", "backend"]
+args = ["build", "--release", "--bin", "backend"]
 
 # =========================================================
 # DATABASE

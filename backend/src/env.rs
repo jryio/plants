@@ -23,7 +23,7 @@ pub enum Env {
     #[strum(serialize = "DATABASE_URL")]
     DbURL,
     #[strum(serialize = "DB_HOST_NAME")]
-    DbHost,
+    DbAddr,
     #[strum(serialize = "DB_PORT_HOST")]
     DbPort,
     #[strum(serialize = "POSTGRES_DB")]
@@ -57,7 +57,7 @@ pub fn require_env_vars() -> Result<(), anyhow::Error> {
     }
     get_app_host().map(|_| ())?;
     get_app_port().map(|_| ())?;
-    get_db_host().map(|_| ())?;
+    get_db_addr().map(|_| ())?;
     get_db_port().map(|_| ())?;
     get_db_name().map(|_| ())?;
     get_db_user().map(|_| ())?;
@@ -119,9 +119,9 @@ pub fn get_db_url() -> Result<String, anyhow::Error> {
             .map_err(|_| EnvError::Invalid(format!("{} invalid utf8", Env::DbPort)))?;
         return Ok(db_url);
     }
-    let host = get_db_host()?
+    let addr = get_db_addr()?
         .into_string()
-        .map_err(|_| EnvError::Invalid(format!("{} is invalid utf8", Env::DbHost)))?;
+        .map_err(|_| EnvError::Invalid(format!("{} is invalid utf8", Env::DbAddr)))?;
 
     let port = get_db_port()?
         .into_string()
@@ -139,15 +139,15 @@ pub fn get_db_url() -> Result<String, anyhow::Error> {
         .into_string()
         .map_err(|_| EnvError::Invalid(format!("{} invalid utf8", Env::DbPassword)))?;
 
-    let url = format!("postgres://{user}:{password}@{host}:{port}/{name}");
+    let url = format!("postgres://{user}:{password}@{addr}:{port}/{name}");
     Ok(url)
 }
 
-pub fn get_db_host() -> Result<OsString, anyhow::Error> {
-    var_os(Env::DbHost.to_string()).ok_or_else(|| {
+pub fn get_db_addr() -> Result<OsString, anyhow::Error> {
+    var_os(Env::DbAddr.to_string()).ok_or_else(|| {
         EnvError::Missing(format!(
             "Database host (env var {}) is required to connect to the database e.g. {}",
-            Env::DbHost,
+            Env::DbAddr,
             EG_CONN_STR
         ))
         .into()

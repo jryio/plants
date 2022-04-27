@@ -17,7 +17,7 @@ services:
       - "./env/app.${MODE:-dev}.env"
       - "./env/db.${MODE:-dev}.env"
     environment:
-      DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_CONTAINER}/${POSTGRES_DB}"
+      DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_CONTAINER_NAME}:${DB_PORT_CONTAINER}/${POSTGRES_DB}"
                             # Bind address for the application (0.0.0.0 most likely)
       APP_HOST_NAME: "${APP_HOST_NAME}"
                             # Use the container's port because inter-service networking requires it rather than host port

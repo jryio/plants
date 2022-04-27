@@ -35,3 +35,16 @@ create table if not exists plants (
   constraint fk_location foreign key (location) references locations(id),
   constraint fk_person foreign key (last_watered_by) references people(id)
 );
+
+-- Create watering_events table
+create table if not exists watering_events (
+  id uuid default uuid_generate_v4(),
+  plant_id uuid not null,
+  person_id uuid not null,
+  ctime timestamptz default NOW(),
+  notes text,
+  -- keys
+  primary key (id),
+  constraint fk_plant foreign key (plant_id) references plants(id),
+  constraint fk_person foreign key (person_id) references people(id)
+);
