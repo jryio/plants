@@ -1,7 +1,7 @@
 {
   "db": "PostgreSQL",
-  "2fad840f21c3eaad9a6b12eb90c08a5aa53d22bf5eb3daa729a934a28ea407f6": {
-    "query": "\n            select\n                plants.id as \"id!\",\n                plants.name as \"name!\",\n                locs.name as \"location!: Location\",\n                birthday as \"birthday!\",\n                image as \"image!\",\n                watering_frequency as \"watering_frequency!\",\n                watering_instructions as \"watering_instructions!\",\n                last_watered_date as \"last_watered_date!\",\n                ppl.name as \"last_watered_by!: Person\"\n            from plants\n            join locations as locs\n                on plants.location = locs.id\n            join people as ppl\n                on plants.last_watered_by = ppl.id\n            ",
+  "59a18928018fb1c9322277c7b5c76c8460ed20032684eeaef1ac3fa18f7b1bb0": {
+    "query": "\n            select\n                plants.id as \"id!\",\n                plants.name as \"name!\",\n                (locs.id, locs.name) as \"location!: Location\",\n                birthday as \"birthday!\",\n                image as \"image!\",\n                watering_frequency as \"watering_frequency!\",\n                watering_instructions as \"watering_instructions!\",\n                last_watered_date as \"last_watered_date!\",\n                (ppl.id, ppl.name) as \"last_watered_by!: Person\"\n            from plants\n            join locations as locs\n                on plants.location = locs.id\n            join people as ppl\n                on plants.last_watered_by = ppl.id\n            ",
     "describe": {
       "columns": [
         {
@@ -17,7 +17,7 @@
         {
           "ordinal": 2,
           "name": "location!: Location",
-          "type_info": "Varchar"
+          "type_info": "Record"
         },
         {
           "ordinal": 3,
@@ -47,7 +47,7 @@
         {
           "ordinal": 8,
           "name": "last_watered_by!: Person",
-          "type_info": "Varchar"
+          "type_info": "Record"
         }
       ],
       "parameters": {
