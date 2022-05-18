@@ -1,5 +1,7 @@
 use async_graphql::{Context, Object, Result};
 
+use crate::db::get_db;
+
 use super::{location::Location, person::Person, plant::Plant};
 
 pub struct QueryRoot;
@@ -27,8 +29,18 @@ impl QueryRoot {
                 on plants.last_watered_by = ppl.id
             "#
         )
-        .fetch_all(crate::db::get_db(ctx)?)
+        .fetch_all(get_db(ctx)?)
         .await?;
         Ok(plants)
+    }
+
+    pub async fn locations(&self, ctx: &Context<'_>) -> Result<Vec<Location>> {
+        let locations = sqlx::query_as!(
+            Location,
+            r#"select id as "id!", name as "name!" from locations"#
+        )
+        .fetch_all(get_db(ctx)?)
+        .await?;
+        Ok(locations)
     }
 }
