@@ -8,11 +8,13 @@
 #
 # 2022-04-26: We choose Rust version 1.58 because at the time of writing,
 # the rust wasm / yew frontend app does not compile on 1.6
+#
 FROM rust:1.58 AS chef
 
 USER root
 
-# We need to make sure we have the wasm target for our Yew app
+# We need to make sure we have the WASM target in our toolchain
+# to compile for our Yew app
 RUN rustup target add wasm32-unknown-unknown
 
 RUN cargo install --locked \
