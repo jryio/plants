@@ -8,6 +8,7 @@ Create a houseplant watering tracker for my girlfriend.
 * `yew`
 * `tailwindcli`
 * `cargo-make (cargo install --force cargo-make)`
+* `sqlx-cli (cargo install sqlx-cli --no-default-features --features native-tls,postgres)`
 
 ## Docker
 
@@ -44,10 +45,7 @@ to define services for each part of the application.
 
 ### Docker Volumes
 
-After reading about [Docker volumes](), I have learned that they are preferable
-to using host directories to bing into container directories. Docker volumes allow for
-
-* Persistant data storage between services/container restarts 
+* Persistent data storage between services/container restarts 
 * Shared data between services
 * Better performance than binding to macOS or Windows filesystems
 * Cross platform data layer (Linux, Windows, etc.)
@@ -57,10 +55,10 @@ For the plantbook app, I will probably want a `vol_database` and `vol_tailwind`
 so that the database contents can be backed up and the tailwind contents can be
 read from other services?
 
-**Pre-populating Volumes**: to propulate a volume with files, we will first need to place the file
+**Pre-Populating Volumes**: to pre-populate a volume with files, we will first need to place the file
 inside the **container**. Then when the volume is created for the first time,
 the contents from the container will be copied over to the shared volume
 
-## Prior Work & References
+## References
 
 [Jesse Hallett's Talk on Writing GraphQL Servers in Rust from the RustNYC Meetup](https://github.com/hallettj/rust_graphql_server_demo)

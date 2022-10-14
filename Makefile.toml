@@ -28,7 +28,7 @@ MODE = "dev"
 MDOE = "prod"
 
 # =========================================================
-# CONFIG
+# GLOBAL CONFIG
 # =========================================================
 [config]
 # Disable pre-defined cargo make tasks
@@ -116,6 +116,12 @@ category = "SQL"
 env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}" }
 command = "psql"
 args = ["${DATABASE_URL}"]
+
+[tasks.db-fake-data]
+category = "SQL"
+env = { "DATABASE_URL" = "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST_NAME}:${DB_PORT_HOST}/${POSTGRES_DB}" }
+command = "psql"
+args = ["${DATABASE_URL}", "-f", "backend/sql/data/dev-data.sql"]
 
 [tasks.migrate-add]
 category = "SQL"
@@ -215,4 +221,4 @@ args = ["compose", "images", "${@}"]
 category = "Help"
 description = "List all tasks"
 command = "cargo"
-args = ["make", "--list-all-steps"]
+args = ["make", "--list-all-steps", "--quiet"]
