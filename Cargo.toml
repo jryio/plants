@@ -1,2 +1,18 @@
 [workspace]
 members = ["frontend", "backend", "common"]
+
+[workspace.dependencies]
+anyhow = "1.0.65"
+async-graphql = { version = "4.0.15", features = [
+  "uuid",
+  "chrono",
+  "chrono-tz",
+] }
+chrono = { version = "0.4.22", features = ["serde"] }
+chrono-tz = { version = "0.6.3", features = ["serde"] }
+serde = { version = "1.0.145", features = ["derive"] }
+strum = { version = "0.24.1", features = ["derive"] }
+uuid = { version = "1.2.1", features = ["serde", "v4"] }
+validator = { version = "0.16.0", features = ["derive"] }
+yew_form = { git = "https://github.com/thebearjew/yew_form", branch = "master" }
+yew_form_derive = { git = "https://github.com/thebearjew/yew_form", branch = "master" }
