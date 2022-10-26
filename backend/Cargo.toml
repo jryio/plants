@@ -6,14 +6,14 @@ readme = "README.md"
 repository = "https://github.com/thebearjew/plantbook"
 
 [dependencies]
-anyhow = "1.0.65"
-async-graphql = "4.0.15"
+anyhow = { workspace = true }
+async-graphql = { workspace = true }
 axum = "0.5.16"
-chrono = { version = "0.4.22", features = ["serde"] }
-chrono-tz = { version = "0.6.3", features = ["serde"] }
+chrono = { workspace = true }
+chrono-tz = { workspace = true }
 common = { version = "0.1.0", path = "../common" }
 project-root = "0.2.2"
-serde = { version = "1.0.145", features = ["derive"] }
+serde = { workspace = true }
 sqlx = { version = "0.6.2", features = [
   "runtime-tokio-rustls",
   "postgres",
@@ -21,8 +21,8 @@ sqlx = { version = "0.6.2", features = [
   "uuid",
   "offline",
 ] }
-strum = { version = "0.24.1", features = ["derive"] }
+strum = { workspace = true }
 tokio = { version = "1.21.2", features = ["full"] }
 tracing = "0.1.37"
 tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
-uuid = { version = "1.2.1", features = ["serde", "v4"] }
+uuid = { workspace = true }
