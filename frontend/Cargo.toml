@@ -21,10 +21,9 @@ getrandom = { version = "0.2.7", features = [
 ] } # This is a dependency of rand which requries the js feature to work
 gloo = "0.8.0"
 gloo-utils = "0.1.5"
+gloo-net = "0.2.4"
 graphql_client = "0.11.0"
 rand = "0.8.5"
-# TODO: @ Jacob - Remove this in favor of its replacement which is gloo::net
-reqwasm = "0.5.0"
 serde = { workspace = true }
 strum = { workspace = true }
 wasm-bindgen = "0.2.83"
