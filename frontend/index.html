@@ -7,6 +7,9 @@
   <!-- Title -->
   <title>Plantbook</title>
 
+  <!-- Include our graphql scherma file on the frontend so we can make graphql queries -->
+  <link data-trunk rel="copy-file" href="../schema.graphql" />
+
   <!-- Tailing CSS plugins for default styling -->
   <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/typography@0.4.x/dist/typography.min.css" />
 
@@ -18,6 +21,7 @@
 
   <!-- Trunk needs assets to be marked with data-trunk -->
   <link data-trunk rel="css" href="styles/index.css" />
+
 </head>
 
 <body class="min-h-screen max-h-screen font-sans">
