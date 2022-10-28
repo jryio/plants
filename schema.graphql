@@ -91,10 +91,10 @@ When a plant has been watered a watering event is created
 """
 type WateringEvent {
 	id: UUID!
-	plantId: UUID!
-	personId: UUID!
 	ctime: DateTime!
 	notes: String!
+	plant: Plant!
+	person: Person!
 }
 
 schema {

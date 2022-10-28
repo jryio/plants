@@ -1,0 +1,19 @@
+query QueryWateringEventById($id: UUID!) {
+  wateringEvent(wateringEventId: $id) {
+    id
+    plant {
+      id
+      name
+      location {
+        id
+        name
+      }
+    }
+    person {
+      id
+      name
+    }
+    ctime
+    notes
+  }
+}

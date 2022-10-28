@@ -1,0 +1,6 @@
+query QueryPeople {
+  people {
+    id
+    name
+  }
+}

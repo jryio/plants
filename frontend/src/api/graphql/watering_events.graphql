@@ -1,0 +1,6 @@
+query QueryWateringEvents {
+  watering_events {
+    id
+    name
+  }
+}

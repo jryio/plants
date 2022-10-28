@@ -1,0 +1,6 @@
+query QueryLocationById($id: UUID!) {
+  location(locationId: $id) {
+    id
+    name
+  }
+}

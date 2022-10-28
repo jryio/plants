@@ -1,0 +1,6 @@
+query QueryPersonById($id: UUID!) {
+  person(personId: $id) {
+    id
+    name
+  }
+}

@@ -1,12 +1,20 @@
 extern crate yew_form;
+#[macro_use]
 extern crate yew_form_derive;
 
+use std::rc::Rc;
+
+use bounce::query::use_query_value;
 use bounce::BounceRoot;
 use yew::prelude::*;
 
+// modules in this crate
+mod api;
 mod components;
 mod store;
 mod util;
+
+use api::queries::plants::{query_plants, BounceQueryPlants};
 
 use components::{
     icon::IconPlusSolid,
@@ -17,8 +25,18 @@ use components::{
 };
 use util::mock_data;
 
+#[function_component(LoadPlants)]
+pub fn load_plants() -> Html {
+    let variables = query_plants::Variables {};
+    let plants = use_query_value::<BounceQueryPlants>(Rc::new(variables));
+    html! {}
+}
+
 #[function_component(App)]
 pub fn app() -> Html {
+    /*
+     * OLD LOADING MOCK DATA
+     */
     // Because this is a ref, we need to dereference then clone to use the value
     // E.g. (*mock_data).clone()
     let mock_data = use_ref(|| mock_data::make_plant_previews(12));
@@ -62,11 +80,15 @@ pub fn app() -> Html {
                     </ModalButton>
                   </div>
                   // Rooms
-                <h2>{"Living Room"}</h2>
+                <h2>{"Living Room - Attempting to Live Load GQL"}</h2>
+                  <PlantContainer>
+                    <LoadPlants />
+                  </PlantContainer>
+                <h2>{"Kitchen"}</h2>
                   <PlantContainer>
                     { plant_cards }
                   </PlantContainer>
-                <h2>{"Kitchen"}</h2>
+
                 <h2>{"Bedroom"}</h2>
                 <h2>{"Office"}</h2>
             </LayoutPage>

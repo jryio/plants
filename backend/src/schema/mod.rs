@@ -1,11 +1,13 @@
-use async_graphql::{Schema, EmptyMutation, EmptySubscription};
+use async_graphql::{EmptyMutation, EmptySubscription, Schema};
 
 mod location;
 mod person;
 mod plant;
-mod query;
 mod watering_event;
 
-pub use query::QueryRoot;
+mod mutations;
+mod queries;
+
+pub use queries::QueryRoot;
 
 pub type PlantbookSchema = Schema<QueryRoot, EmptyMutation, EmptySubscription>;

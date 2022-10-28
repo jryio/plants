@@ -1,0 +1,19 @@
+query QueryPlantById($id: UUID!) {
+  plant(plantId: $id) {
+    id
+    name
+    birthday
+    image
+    wateringFrequency
+    wateringInstructions
+    lastWateredDate
+    lastWateredBy {
+      id
+      name
+    }
+    location {
+      id
+      name
+    }
+  }
+}

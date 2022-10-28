@@ -11,11 +11,14 @@ repository = "https://github.com/thebearjew/plantbook"
 common = { version = "0.1.0", path = "../common" }
 
 # External
+anyhow = { workspace = true }
+async-trait = "0.1.58"
 boolinator = "2.4.0"
-bounce = { git = "https://github.com/futursolo/bounce.git", rev = "6fee754bcc2685442f508f19fe3b0e7d0914c8e5" }
+bounce = { version = "0.3.0", features = ["query"] }
 chrono = { workspace = true, features = [
   "wasmbind",
 ] } # Chrono for date diffing -> consider changing this as it is no longer maintained
+chrono-tz = { workspace = true }
 getrandom = { version = "0.2.7", features = [
   "js",
 ] } # This is a dependency of rand which requries the js feature to work
@@ -25,12 +28,15 @@ gloo-net = "0.2.4"
 graphql_client = "0.11.0"
 rand = "0.8.5"
 serde = { workspace = true }
+serde_json = "1.0.87"
 strum = { workspace = true }
 wasm-bindgen = "0.2.83"
 wasm-logger = "0.2.0"
 yew = "0.19.3"
 yew_form = { workspace = true }
 yew_form_derive = { workspace = true }
+uuid = { workspace = true }
+validator = { workspace = true }
 
 [dependencies.web-sys]
 version = "0.3.60"
