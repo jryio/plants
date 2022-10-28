@@ -62,6 +62,7 @@ RUN SQLX_OFFLINE=true cargo build \
 # Build frontend source code. The compiled WASM and HTML file will be served by
 # the backend...
 # TODO: @ Jacob - Ensure that the backend actually serves the frotnend files
+# cargo make `build-web` calls trunk internally
 RUN cargo make \
   -p prod \
   build-web
