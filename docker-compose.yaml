@@ -12,7 +12,6 @@ services:
     links:                                            # Creates the hostname "database" which points to service "db". Implies "depends_on"
       - db:database
     depends_on:                                       # Make sure service "db" is alive before starting serivce "app"
-      - tailwind
       - db
     env_file:                                         # Load environment variables for the application depending on the ${MODE}
       - "./env/common.env"
@@ -47,30 +46,6 @@ services:
       - "${APP_PORT_HOST}:${APP_PORT_CONTAINER}"
     command: ["/usr/local/bin/backend"]
 
-  # ------------------------------------------------- Tailwind --------------------------------------------------------
-  tailwind:
-    container_name: tailwind
-    env_file:                                         # Load input and output paths from common.env
-      - "./env/common.env"
-    build:
-      context: .                                      # By adding ocntext here, our dockerfile will see the root dir structure
-      args:
-        tw_config_path: "${TW_CONFIG_PATH}"
-      dockerfile: ./docker/tailwind.Dockerfile
-    volumes:
-      - type: bind                                    # Bind TW_HOST_INPUT_DIR (frontend) to container /tailwind/input
-        source: "${TW_HOST_INPUT_DIR}"
-        target: "/tailwind/input"
-      - type: bind                                    # Bind TW_HOST_OUTPUT_DIR (frontend/dist) to container /tailwind/output
-        source: "${TW_HOST_OUTPUT_DIR}"
-        target: /tailwind/output
-      # - "tailwind_output:/tailwind/output"
-    ports:
-      - "${TW_PORT_HOST}:${TW_PORT_CONTAINER}"
-    command: [              # Build the tailwind css file
-      "/bin/sh",
-      "tailwind.build.sh" ]
-
   # ------------------------------------------------- DB --------------------------------------------------------------
   db:
     container_name: db
@@ -89,6 +64,5 @@ services:
       - "${DB_PORT_HOST}:${DB_PORT_CONTAINER}"
 
 volumes:                                              # -------------- Volumes ----------------
-  vol_tw:                                             # Create a volume to store the tailwind build output
   vol_db:                                             # Create a persistent database volum
     driver: local

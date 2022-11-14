@@ -9,7 +9,6 @@
 # Load env files depending on our profile
 # Values will be used in docker-compose.yaml
 env_files = [
-  { path = "./env/common.env" },
   # App env files
   { path = "./env/app.dev.env", profile = "development" },
   { path = "./env/app.prod.env", profile = "prod" },
@@ -44,7 +43,6 @@ default_to_workspace = false
 # =========================================================
 [tasks.start]
 # TODO:
-# - Build tailwind once
 # - Start frontennd
 # - Write a cleanup flow of tasks that undoes everything in "start
 #   Mainly shutting down docker containers like DB and TW
@@ -74,22 +72,6 @@ category = "Build"
 condition = { profiles = ["prod"] }
 command = "trunk"
 args = ["build", "--dist", "backend/static/frontend", "frontend/index.html"]
-
-# TAILWIND
-# TODO: @ jacob - make this watch file changes?
-[tasks.start-tw]
-category = "Build"
-watch = { watch = [
-  "./frontend/styles/index.css",
-  "./frontend/src",
-], ignore_pattern = "./frontend/**/tailwind.css" }
-command = "docker"
-args = ["compose", "up", "tailwind"]
-
-[tasks.build-tw]
-category = "Build"
-command = "docker"
-args = ["compose", "up", "tailwind"]
 
 # SERVER
 [tasks.start-server]

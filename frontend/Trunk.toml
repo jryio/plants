@@ -1,4 +1,3 @@
-# Source: https://github.com/thedodd/trunk/blob/master/examples/yew-tailwindcss/Trunk.toml
 [build]
 target = "index.html"
 dist = "dist"
