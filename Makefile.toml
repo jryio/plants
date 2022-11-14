@@ -58,23 +58,41 @@ run_task = [
   ] },
 ]
 
-# WEB
-[tasks.start-web]
+# TAILWIND
+[tasks.start-tw]
 category = "Build"
 condition = { profiles = ["development"] }
-watch = { watch = ["./src/"] }
-command = "trunk"
-args = ["serve"]
-dependencies = ["start-tw"]
+command = "./scripts/tailwindcss"
+args = [
+  "--config",
+  "./frontend/tailwind.config.js",
+  "--input",
+  "./frontend/styles/index.css",
+  "--output",
+  "./frontend/styles/tailwind.css",
+  "--watch",
+]
 
-[tasks.build-web]
+# FRONTEND
+[tasks.start-fe]
+category = "Build"
+condition = { profiles = ["development"] }
+command = "trunk"
+args = ["--config", "./frontend/Trunk.toml", "serve"]
+
+[tasks.build-fe]
 category = "Build"
 condition = { profiles = ["prod"] }
 command = "trunk"
 args = ["build", "--dist", "backend/static/frontend", "frontend/index.html"]
 
-# SERVER
-[tasks.start-server]
+[tasks.hot-fe]
+category = "Build"
+condition = { profiles = ["development"] }
+run_task = { name = ["start-tw", "start-fe"], fork = true, parallel = true }
+
+# BACKEND
+[tasks.start-be]
 category = "Build"
 env = { "APP_PORT" = "${APP_PORT_HOST}" }
 condition = { profiles = ["development"], env_set = ["DATABASE_URL"] }
@@ -82,7 +100,7 @@ watch = { watch = ["./backend"] }
 command = "cargo"
 args = ["run", "--package", "backend"]
 
-[tasks.build-server]
+[tasks.build-be]
 category = "Build"
 condition = { profiles = ["prod"] }
 command = "cargo"
