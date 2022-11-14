@@ -1,13 +1,11 @@
-// IMPORTANT - This tailwind config file will be run within a docker container
 module.exports = {
-  mode: 'jit',
   // If we're running one directory higher this shoudl still find our content files
   content: [
     "**/index.html",
     "**/src/**/*.rs"
   ],
   important: true,
-  darkMode: false, // or 'media' or 'class'
+  // darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
       fontFamily: {
@@ -15,8 +13,13 @@ module.exports = {
       }
     },
   },
-  variants: {
-    extend: {},
-  },
-  plugins: [],
+  // Plugins can work without installing Node.js. The standalone
+  // tailwindcss-cli binary comes pre-compiled with the latest versions of
+  // first-party plugins.
+  //
+  // Documentation: https://tailwindcss.com/blog/standalone-cli
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+  ]
 }

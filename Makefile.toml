@@ -9,7 +9,6 @@
 # Load env files depending on our profile
 # Values will be used in docker-compose.yaml
 env_files = [
-  { path = "./env/common.env" },
   # App env files
   { path = "./env/app.dev.env", profile = "development" },
   { path = "./env/app.prod.env", profile = "prod" },
@@ -44,7 +43,6 @@ default_to_workspace = false
 # =========================================================
 [tasks.start]
 # TODO:
-# - Build tailwind once
 # - Start frontennd
 # - Write a cleanup flow of tasks that undoes everything in "start
 #   Mainly shutting down docker containers like DB and TW
@@ -60,39 +58,41 @@ run_task = [
   ] },
 ]
 
-# WEB
-[tasks.start-web]
+# TAILWIND
+[tasks.start-tw]
 category = "Build"
 condition = { profiles = ["development"] }
-watch = { watch = ["./src/"] }
-command = "trunk"
-args = ["serve"]
-dependencies = ["start-tw"]
+command = "./scripts/tailwindcss"
+args = [
+  "--config",
+  "./frontend/tailwind.config.js",
+  "--input",
+  "./frontend/styles/index.css",
+  "--output",
+  "./frontend/styles/tailwind.css",
+  "--watch",
+]
 
-[tasks.build-web]
+# FRONTEND
+[tasks.start-fe]
+category = "Build"
+condition = { profiles = ["development"] }
+command = "trunk"
+args = ["--config", "./frontend/Trunk.toml", "serve"]
+
+[tasks.build-fe]
 category = "Build"
 condition = { profiles = ["prod"] }
 command = "trunk"
 args = ["build", "--dist", "backend/static/frontend", "frontend/index.html"]
 
-# TAILWIND
-# TODO: @ jacob - make this watch file changes?
-[tasks.start-tw]
+[tasks.hot-fe]
 category = "Build"
-watch = { watch = [
-  "./frontend/styles/index.css",
-  "./frontend/src",
-], ignore_pattern = "./frontend/**/tailwind.css" }
-command = "docker"
-args = ["compose", "up", "tailwind"]
+condition = { profiles = ["development"] }
+run_task = { name = ["start-tw", "start-fe"], fork = true, parallel = true }
 
-[tasks.build-tw]
-category = "Build"
-command = "docker"
-args = ["compose", "up", "tailwind"]
-
-# SERVER
-[tasks.start-server]
+# BACKEND
+[tasks.start-be]
 category = "Build"
 env = { "APP_PORT" = "${APP_PORT_HOST}" }
 condition = { profiles = ["development"], env_set = ["DATABASE_URL"] }
@@ -100,7 +100,7 @@ watch = { watch = ["./backend"] }
 command = "cargo"
 args = ["run", "--package", "backend"]
 
-[tasks.build-server]
+[tasks.build-be]
 category = "Build"
 condition = { profiles = ["prod"] }
 command = "cargo"

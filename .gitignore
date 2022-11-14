@@ -4,4 +4,4 @@ Cargo.lock
 node_modules
 .env/*.prod.env
 backend/static/frontend
-tailwind.css
+*tailwind.css

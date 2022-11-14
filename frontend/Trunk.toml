@@ -1,4 +1,14 @@
-# Source: https://github.com/thedodd/trunk/blob/master/examples/yew-tailwindcss/Trunk.toml
 [build]
 target = "index.html"
 dist = "dist"
+
+[serve]
+port = 3000
+
+[watch]
+ignore = [
+  "dist",
+  "tailwind.config.js",
+  "styles/index.css",
+  "styles/tailwind.css",
+]
