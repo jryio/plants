@@ -1,4 +1,4 @@
-# :houseplant: Plantbook
+# 🪴 Plantbook
 
 Create a houseplant watering tracker for my girlfriend.
 
